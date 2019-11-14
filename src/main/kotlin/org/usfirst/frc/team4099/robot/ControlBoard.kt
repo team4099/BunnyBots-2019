@@ -14,7 +14,6 @@ class ControlBoard private constructor() {
     val turn: Double
         get() = -driver.leftXAxis
 
-
     companion object {
         val instance = ControlBoard()
     }

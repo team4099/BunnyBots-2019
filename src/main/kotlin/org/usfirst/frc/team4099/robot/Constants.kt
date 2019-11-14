@@ -102,4 +102,8 @@ class Constants {
         val SHOTGUN_PORT = 1
     }
 
+    object Intake {
+        val INTAKE_TALON = 2
+    }
+
 }
