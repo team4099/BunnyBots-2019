@@ -8,28 +8,28 @@ import org.usfirst.frc.team4099.robot.subsystems.Subsystem
 object SubsystemManager {
     val subsystems = mutableListOf<Subsystem>()
     val enabledLoop = object : Loop {
-        override fun onStart() {
-            subsystems.forEach { it.loop.onStart() }
+        override fun onStart(timestamp: Double) {
+            subsystems.forEach { it.loop.onStart(timestamp) }
         }
 
-        override fun onLoop() {
-            subsystems.forEach { it.loop.onLoop() }
+        override fun onLoop(timestamp: Double) {
+            subsystems.forEach { it.loop.onLoop(timestamp) }
             outputTelemetry()
         }
 
-        override fun onStop() {
-            subsystems.forEach { it.loop.onStop() }
+        override fun onStop(timestamp: Double) {
+            subsystems.forEach { it.loop.onStop(timestamp) }
         }
     }
 
     val disabledLoop = object : Loop {
-        override fun onStart() {}
+        override fun onStart(timestamp: Double) {}
 
-        override fun onLoop() {
+        override fun onLoop(timestamp: Double) {
             outputTelemetry()
         }
 
-        override fun onStop() {}
+        override fun onStop(timestamp: Double) {}
     }
 
     fun register(subsystem: Subsystem) {

@@ -15,11 +15,11 @@ class BrownoutDefender private constructor() : Loop {
     //private val elevator = Elevator.instance
     private val compressor = Compressor()
 
-    override fun onStart() {
+    override fun onStart(timestamp: Double) {
         pdp.clearStickyFaults()
     }
 
-    override fun onLoop() {
+    override fun onLoop(timestamp: Double) {
         if (pdp.voltage < 10 || pdp.totalCurrent > 70) {
             compressor.stop()
         } else {
@@ -27,9 +27,7 @@ class BrownoutDefender private constructor() : Loop {
         }
     }
 
-    override fun onStop() {
-
-    }
+    override fun onStop(timestamp: Double) {}
 
     fun getCurrent(channel: Int): Double {
         return pdp.getCurrent(channel)

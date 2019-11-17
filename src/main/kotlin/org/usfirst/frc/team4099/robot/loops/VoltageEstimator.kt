@@ -18,16 +18,16 @@ class VoltageEstimator : Loop {
         HelixLogger.getInstance().addDoubleSource("VoltageEstimator Avg. Disabled Voltage") { averageVoltage }
     }
 
-    override fun onStart() {
+    override fun onStart(timestamp: Double) {
         println("Robot disabled: computing avg voltage")
     }
 
-    @Synchronized override fun onLoop() {
+    @Synchronized override fun onLoop(timestamp: Double) {
         val curVoltage = RobotController.getBatteryVoltage()
         averageVoltage = (curVoltage + weight * averageVoltage) / (1.0 + weight)
     }
 
-    override fun onStop() {
+    override fun onStop(timestamp: Double) {
         println("Robot enabled: last avg voltage: $averageVoltage")
     }
 
