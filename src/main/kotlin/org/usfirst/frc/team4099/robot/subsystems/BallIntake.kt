@@ -21,15 +21,15 @@ class BallIntake: Subsystem() {
     var intakeStage = IntakeStage.STOP
 
     override val loop = object : Loop {
-        override fun onStart() {
+        override fun onStart(timestamp: Double) {
             TODO("not implemented")
         }
 
-        override fun onLoop() {
+        override fun onLoop(timestamp: Double) {
             TODO("not implemented")
         }
 
-        override fun onStop() = stop()
+        override fun onStop(timestamp: Double) = stop()
     }
 
     override fun stop() {

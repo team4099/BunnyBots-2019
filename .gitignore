@@ -82,9 +82,9 @@ dist
 dist/FRCUserProgram.jar
 
 .settings
-.DSStore
-._.DSStore
-**/.DSStore
-**/._.DSStore
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
 .classpath
 .project

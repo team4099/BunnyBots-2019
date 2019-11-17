@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4099.robot.loops
 
+import com.team2363.logger.HelixLogger
 import edu.wpi.first.wpilibj.Notifier
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
@@ -8,7 +9,6 @@ import org.usfirst.frc.team4099.robot.Constants
 import java.util.*
 
 class Looper(private val name: String) {
-
     private var running: Boolean = false
 
     private val notifier: Notifier
@@ -17,7 +17,8 @@ class Looper(private val name: String) {
     private val loops: MutableList<Loop> = ArrayList()
 
     private var timestamp = 0.0
-    private var dt = 0.0 //50 hz
+    var dt = 0.0
+        private set
 
     // define the thread (runnable) that will be repeated continuously
     private val runnable = object : CrashTrackingRunnable() {
@@ -26,7 +27,7 @@ class Looper(private val name: String) {
                 if (running) {
                     val now = Timer.getFPGATimestamp()
                     for (loop in loops) {
-                        loop.onLoop()
+                        loop.onLoop(now)
                     }
                     dt = now - timestamp
                     timestamp = now
@@ -50,43 +51,34 @@ class Looper(private val name: String) {
     @Synchronized
     fun start() {
         if (!running) {
-            println("Starting looper: " + name)
+            println("Starting looper: $name")
             synchronized(taskRunningLock) {
                 timestamp = Timer.getFPGATimestamp()
                 for (loop in loops) {
-                    loop.onStart()
+                    loop.onStart(timestamp)
                 }
 
                 running = true
             }
-            notifier.startPeriodic(kPeriod)
+            notifier.startPeriodic(Constants.Loopers.LOOPER_DT)
         }
     }
 
     @Synchronized
     fun stop() {
         if (running) {
-            println("Stopping looper: " + name)
+            println("Stopping looper: $name")
             notifier.stop()
 
             synchronized(taskRunningLock) {
                 running = false
+                timestamp = Timer.getFPGATimestamp()
 
                 for (loop in loops) {
-                    println("Stopping " + loop) // give the loops a name
-                    loop.onStop()
+                    println("Stopping $loop") // give the loops a name
+                    loop.onStop(timestamp)
                 }
             }
         }
     }
-
-    fun outputToSmartDashboard() {
-        SmartDashboard.putNumber("looper_dt ($name)", dt)
-    }
-
-    companion object {
-
-        private val kPeriod = 0.02
-    }
-
 }

@@ -5,13 +5,14 @@ import org.usfirst.frc.team4099.lib.drive.DriveSignal
 import org.usfirst.frc.team4099.lib.util.Utils
 import org.usfirst.frc.team4099.robot.subsystems.Drive
 import kotlin.math.abs
+import kotlin.math.sign
 
 /**
  * Created by Oksana on 2/16/2017.
  */
 class TurnAction(angleToTurn: Double, slowMode: Boolean) : Action {
     private val drive = Drive.instance
-    private val direction = if (angleToTurn > 0) 1 else -1
+    private val direction = sign(angleToTurn)
     private val angleToTurn = abs(angleToTurn)
     private var power = 0.5
     private var startAngle = 0.0

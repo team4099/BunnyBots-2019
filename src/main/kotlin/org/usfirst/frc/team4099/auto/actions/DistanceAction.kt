@@ -6,10 +6,11 @@ import org.usfirst.frc.team4099.lib.drive.DriveSignal
 import org.usfirst.frc.team4099.lib.util.Utils
 import org.usfirst.frc.team4099.robot.subsystems.Drive
 import kotlin.math.abs
+import kotlin.math.sign
 
 class DistanceAction(inchesToMove: Double, slowMode: Boolean) : Action {
     private val drive = Drive.instance
-    private val direction = if (inchesToMove > 0) 1 else -1
+    private val direction = sign(inchesToMove)
     private val inchesToMove: Double = abs(inchesToMove)
     private var startDist = 0.0
     private var otherStart = 0.0

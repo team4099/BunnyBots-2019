@@ -1,4 +1,4 @@
-//package main.java.org.usfirst.frc.team4099.lib.util
+//package org.usfirst.frc.team4099.lib.util
 //
 //import kotlinx.serialization.Serializable
 //import org.usfirst.frc.team4099.DashboardConfigurator

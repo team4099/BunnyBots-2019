@@ -6,7 +6,7 @@ import org.usfirst.frc.team4099.lib.util.CrashTrackingRunnable
 /**
  * Created by plato2000 on 2/13/17.
  */
-class AutoModeExecuter {
+class AutoModeExecutor {
     private var autoMode: AutoModeBase? = null
     private var thread: Thread? = null
 
