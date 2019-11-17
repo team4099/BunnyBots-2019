@@ -7,9 +7,10 @@ import org.usfirst.frc.team4099.auto.AutoModeEndedException
  * standstill
  */
 class StandStillMode : AutoModeBase() {
-
     @Throws(AutoModeEndedException::class)
     override fun routine() {
         println("Starting Stand Still Mode... Done!")
     }
+
+    override fun done() {}
 }
