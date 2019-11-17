@@ -168,20 +168,15 @@ class Drive private constructor() : Subsystem() {
                     DriveControlState.OPEN_LOOP -> {
                         leftTargetVel = 0.0
                         rightTargetVel = 0.0
-                        return
                     }
-                    DriveControlState.VELOCITY_SETPOINT -> {
-                        return
-                    }
+                    DriveControlState.VELOCITY_SETPOINT -> {}
                     DriveControlState.PATH_FOLLOWING -> {
                         updatePathFollowing()
-                        return
                     }
                     DriveControlState.TURN_TO_HEADING -> {
                         leftTargetVel = 0.0
                         rightTargetVel = 0.0
                         // updateTurnToHeading(timestamp)
-                        return
                     }
                     else -> {
                         HelixEvents.getInstance().addEvent("DRIVETRAIN", "Unexpected drive control state: $currentState")
