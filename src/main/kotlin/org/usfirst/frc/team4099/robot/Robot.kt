@@ -4,19 +4,16 @@ import com.team2363.logger.HelixEvents
 import com.team2363.logger.HelixLogger
 import edu.wpi.first.cameraserver.CameraServer
 import edu.wpi.first.wpilibj.RobotController
-import org.usfirst.frc.team4099.lib.util.Utils
-
-
+import edu.wpi.first.wpilibj.TimedRobot
 import org.usfirst.frc.team4099.DashboardConfigurator
 import org.usfirst.frc.team4099.auto.AutoModeExecutor
-import edu.wpi.first.wpilibj.TimedRobot
-//import org.usfirst.frc.team4099.auto.AutoModeExecuter
 import org.usfirst.frc.team4099.lib.util.CrashTracker
+import org.usfirst.frc.team4099.lib.util.Utils
 import org.usfirst.frc.team4099.robot.loops.BrownoutDefender
 import org.usfirst.frc.team4099.robot.loops.FaultDetector
 import org.usfirst.frc.team4099.robot.loops.Looper
 import org.usfirst.frc.team4099.robot.loops.VoltageEstimator
-import org.usfirst.frc.team4099.robot.subsystems.*
+import org.usfirst.frc.team4099.robot.subsystems.Drive
 
 class Robot : TimedRobot() {
     private lateinit var autoModeExecutor: AutoModeExecutor
@@ -92,11 +89,11 @@ class Robot : TimedRobot() {
 
     override fun disabledPeriodic() {
         try {
-            //SmartDashboard.putNumber("Dashboard Test", dashBoardTest * 1.0)
+            // SmartDashboard.putNumber("Dashboard Test", dashBoardTest * 1.0)
 //            dashBoardTest++
 //            led.setNumber(3)
 
-            //outputAllToSmartDashboard()
+            // outputAllToSmartDashboard()
 //            wrist.outputToSmartDashboard()
         } catch (t: Throwable) {
             CrashTracker.logThrowableCrash("disabledPeriodic", t)
@@ -105,14 +102,7 @@ class Robot : TimedRobot() {
     }
 
     override fun autonomousPeriodic() {
-//        try {
-//            //outputAllToSmartDashboard()
-//            updateDashboardFeedback()
-//        } catch (t: Throwable) {
-//            CrashTracker.logThrowableCrash("autonomousPeriodic", t)
-//            throw t
-//        }
-       teleopPeriodic()
+        teleopPeriodic()
     }
 
     override fun teleopPeriodic() {

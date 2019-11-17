@@ -3,7 +3,7 @@ package org.usfirst.frc.team4099.robot.loops
 import com.team2363.logger.HelixEvents
 import edu.wpi.first.wpilibj.RobotController
 
-object FaultDetector: Loop {
+object FaultDetector : Loop {
     var rio3v3Faults = 0
         set(faults) {
             if (field != faults) {

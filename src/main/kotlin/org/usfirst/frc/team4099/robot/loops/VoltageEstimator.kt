@@ -1,7 +1,6 @@
 package org.usfirst.frc.team4099.robot.loops
 
 import com.team2363.logger.HelixLogger
-import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.RobotController
 
 /** Constantly measures battery voltage before the match begins.

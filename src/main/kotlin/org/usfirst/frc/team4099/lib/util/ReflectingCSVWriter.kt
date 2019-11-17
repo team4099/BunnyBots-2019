@@ -44,7 +44,7 @@ class ReflectingCSVWriter<T>(file: String, typeClass: Class<T>) {
                     break
                 }
                 writeLine(value)
-            } catch (e : IllegalStateException) {
+            } catch (e: IllegalStateException) {
                 break
             }
         }

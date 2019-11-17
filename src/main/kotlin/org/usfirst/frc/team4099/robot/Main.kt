@@ -1,8 +1,6 @@
 package org.usfirst.frc.team4099.robot
 
-import com.team2363.logger.HelixLogger
 import edu.wpi.first.wpilibj.RobotBase
-import org.usfirst.frc.team4099.robot.Robot
 import java.util.function.Supplier
 
 public class Main {

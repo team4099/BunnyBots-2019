@@ -14,7 +14,7 @@ class Constants {
         val RIGHT_SLAVE_1_ID = 6
         // val RIGHT_SLAVE_2_ID = 10
 
-        val HIGH_GEAR_MAX_SETPOINT = 17.0  //17 fps
+        val HIGH_GEAR_MAX_SETPOINT = 17.0 // 17 fps
 
         val MAX_LEFT_OPENLOOP_POWER = 1.0
         val MAX_RIGHT_OPENLOOP_POWER = 1.0
@@ -40,7 +40,7 @@ class Constants {
         val LEFT_V_INTERCEPT_REVERSE_HIGH = -0.1856
         val RIGHT_V_INTERCEPT_REVERSE_HIGH = -0.2003
 
-        val FEET_PER_SEC_TO_NATIVE = 6.8 * 60.0 //10.4
+        val FEET_PER_SEC_TO_NATIVE = 6.8 * 60.0 // 10.4
 
         val CLOSED_LOOP_RAMP = 0.0
 
@@ -51,7 +51,7 @@ class Constants {
         val AUTO_NOMINAL_OUTPUT = 0.0
         val AUTO_PEAK_OUTPUT = 0.0
 
-        val NATIVE_TO_REVS = 12/2336
+        val NATIVE_TO_REVS = 12 / 2336
 
         val WHEEL_DIAMETER_INCHES = 6
         val WHEEL_TRACK_WIDTH_INCHES = 27
@@ -59,32 +59,30 @@ class Constants {
         val TRACK_SCRUB_FACTOR = 1.1
     }
 
-    object Wheels {
-
-    }
+    object Wheels
 
     object Gains {
-        val LEFT_LOW_KP = 0.0000//.1 * 1500 / 70
+        val LEFT_LOW_KP = 0.0000 // .1 * 1500 / 70
         val LEFT_LOW_KI = 0.0000
         val LEFT_LOW_KD = 0.0000
-        val LEFT_LOW_KF = 0.0000//1023.0 / 2220.0
+        val LEFT_LOW_KF = 0.0000 // 1023.0 / 2220.0
 
-        //subject to change
-        val LEFT_HIGH_KP = 0.0000//.1 * 1023 / 70
+        // subject to change
+        val LEFT_HIGH_KP = 0.0000 // .1 * 1023 / 70
         val LEFT_HIGH_KI = 0.0000
         val LEFT_HIGH_KD = 0.0000
-        val LEFT_HIGH_KF = 0.0000//1023.0 / 4420.0
+        val LEFT_HIGH_KF = 0.0000 // 1023.0 / 4420.0
 
-        val RIGHT_LOW_KP = 0.0000//.1 * 1500 / 70
+        val RIGHT_LOW_KP = 0.0000 // .1 * 1500 / 70
         val RIGHT_LOW_KI = 0.0000
         val RIGHT_LOW_KD = 0.0000
-        val RIGHT_LOW_KF = 0.0000//1023.0 / 2220.0
+        val RIGHT_LOW_KF = 0.0000 // 1023.0 / 2220.0
 
-        //subject to change
-        val RIGHT_HIGH_KP = 0.0000//.1 * 1023 / 70
+        // subject to change
+        val RIGHT_HIGH_KP = 0.0000 // .1 * 1023 / 70
         val RIGHT_HIGH_KI = 0.0000
         val RIGHT_HIGH_KD = 0.0000
-        val RIGHT_HIGH_KF = 0.0000//1023.0 / 4420.0
+        val RIGHT_HIGH_KF = 0.0000 // 1023.0 / 4420.0
     }
 
     object Loopers {
@@ -106,7 +104,7 @@ class Constants {
         val SELECTED_AUTO_START_DELAY_KEY = "autonomous/selectedDelay"
 
         val CONNECTION_TIMEOUT_MILLIS = 1000
-        val NUMBER_OF_TRIES = 5 ;
+        val NUMBER_OF_TRIES = 5
     }
     object Joysticks {
         val DRIVER_PORT = 0

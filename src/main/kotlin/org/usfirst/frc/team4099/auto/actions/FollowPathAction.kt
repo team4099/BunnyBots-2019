@@ -5,21 +5,19 @@ import org.usfirst.frc.team4099.auto.paths.Path
 import org.usfirst.frc.team4099.lib.drive.DriveSignal
 import org.usfirst.frc.team4099.robot.subsystems.Drive
 
-class FollowPathAction(path: FieldPaths): Action {
+class FollowPathAction(path: FieldPaths) : Action {
     private val mDrive: Drive = Drive.instance
     private val pathF = Path(path)
 
     override fun start() {
         mDrive.enablePathFollow(pathF)
     }
-    override fun update(){
-
+    override fun update() {
     }
-    override fun done(){
+    override fun done() {
         mDrive.setOpenLoop(DriveSignal.NEUTRAL)
     }
-    override fun isFinished(): Boolean{
+    override fun isFinished(): Boolean {
         return mDrive.isPathFinished()
-
     }
 }

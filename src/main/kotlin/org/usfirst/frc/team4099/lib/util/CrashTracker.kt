@@ -5,7 +5,7 @@ import java.io.BufferedWriter
 import java.io.FileWriter
 import java.io.IOException
 import java.io.PrintWriter
-import java.util.*
+import java.util.UUID
 
 /**
  * Tracks startup and caught crash events, logging them to a file

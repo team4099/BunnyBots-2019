@@ -62,6 +62,5 @@ class IntakeBhog : Subsystem() {
 
     override fun outputToSmartDashboard() {
         SmartDashboard.putString("intake/intakeState", intakeState.toString())
-
     }
 }

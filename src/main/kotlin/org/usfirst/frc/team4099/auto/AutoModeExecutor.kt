@@ -23,12 +23,10 @@ class AutoModeExecutor {
             })
             thread?.start()
         }
-
     }
 
     fun stop() {
         autoMode?.stop()
         thread = null
     }
-
 }

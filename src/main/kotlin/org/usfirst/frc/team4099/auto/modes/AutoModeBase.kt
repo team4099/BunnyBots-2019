@@ -50,9 +50,7 @@ abstract class AutoModeBase {
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             }
-
         }
         action.done()
     }
-
 }

@@ -1,6 +1,5 @@
 package org.usfirst.frc.team4099.robot
 
-import com.team2363.logger.HelixEvents
 import com.team2363.logger.HelixLogger
 import org.usfirst.frc.team4099.robot.loops.Loop
 import org.usfirst.frc.team4099.robot.subsystems.Subsystem
@@ -41,7 +40,7 @@ object SubsystemManager {
     }
 
     fun outputTelemetry() {
-        subsystems.forEach{ it.outputToSmartDashboard() }
+        subsystems.forEach { it.outputToSmartDashboard() }
         HelixLogger.getInstance().saveLogs()
     }
 
@@ -50,6 +49,6 @@ object SubsystemManager {
     }
 
     fun stop() {
-        subsystems.forEach{ it.stop() }
+        subsystems.forEach { it.stop() }
     }
 }

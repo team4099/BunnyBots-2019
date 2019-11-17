@@ -31,49 +31,48 @@ class Path(path: FieldPaths) {
         fillAccelerations(leftFile, rightFile)
         fillDistances(leftFile, rightFile)
         fillHeadings(leftFile)
-        println("********"+ leftVelocities.size)
-
+        println("********" + leftVelocities.size)
     }
-    private fun fillVelocities(leftTraj: File, rightTraj: File){
-        var linesL:List<String> = leftTraj.readLines()
-        for(i in 1..linesL.lastIndex){
-            val separated:List<String> = linesL.get(i).split(",")
+    private fun fillVelocities(leftTraj: File, rightTraj: File) {
+        var linesL: List<String> = leftTraj.readLines()
+        for (i in 1..linesL.lastIndex) {
+            val separated: List<String> = linesL.get(i).split(",")
 //            println("Velocity: " + separated.get(4) + " Acceleration: " + separated.get(5))
 //            val velocity = separated.get(4)
 //            val accel = separated.get(5)
             leftVelocities.add(separated.get(4).toDouble())
         }
-        var linesR:List<String> = rightTraj.readLines()
-        for(i in 1..linesR.lastIndex){
-            val separated:List<String> = linesR.get(i).split(",")
+        var linesR: List<String> = rightTraj.readLines()
+        for (i in 1..linesR.lastIndex) {
+            val separated: List<String> = linesR.get(i).split(",")
 //            println("Velocity: " + separated.get(4) + " Acceleration: " + separated.get(5))
 //            val velocity = separated.get(4)
 //            val accel = separated.get(5)
             rightVelocities.add(separated.get(4).toDouble())
         }
     }
-    private fun fillDistances(leftTraj: File, rightTraj: File){
-        var linesL:List<String> = leftTraj.readLines()
-        for(i in 1..linesL.lastIndex){
-            val separated:List<String> = linesL.get(i).split(",")
+    private fun fillDistances(leftTraj: File, rightTraj: File) {
+        var linesL: List<String> = leftTraj.readLines()
+        for (i in 1..linesL.lastIndex) {
+            val separated: List<String> = linesL.get(i).split(",")
 //            println("Velocity: " + separated.get(4) + " Acceleration: " + separated.get(5))
 //            val velocity = separated.get(4)
 //            val accel = separated.get(5)
             leftDistances.add(separated.get(3).toDouble())
         }
-        var linesR:List<String> = rightTraj.readLines()
-        for(i in 1..linesR.lastIndex){
-            val separated:List<String> = linesR.get(i).split(",")
+        var linesR: List<String> = rightTraj.readLines()
+        for (i in 1..linesR.lastIndex) {
+            val separated: List<String> = linesR.get(i).split(",")
 //            println("Velocity: " + separated.get(4) + " Acceleration: " + separated.get(5))
 //            val velocity = separated.get(4)
 //            val accel = separated.get(5)
             rightDistances.add(separated.get(3).toDouble())
         }
     }
-    public fun fillHeadings(traj: File){
-        var lines:List<String> = traj.readLines()
-        for(i in 1..lines.lastIndex){
-            val separated:List<String> = lines.get(i).split(",")
+    public fun fillHeadings(traj: File) {
+        var lines: List<String> = traj.readLines()
+        for (i in 1..lines.lastIndex) {
+            val separated: List<String> = lines.get(i).split(",")
 //            println("Velocity: " + separated.get(4) + " Acceleration: " + separated.get(5))
 //            val velocity = separated.get(4)
 //            val accel = separated.get(5)
@@ -82,17 +81,17 @@ class Path(path: FieldPaths) {
     }
 
     fun fillAccelerations(leftTraj: File, rightTraj: File) {
-        var linesL:List<String> = leftTraj.readLines()
-        for(i in 1..linesL.lastIndex){
-            val separated:List<String> = linesL.get(i).split(",")
+        var linesL: List<String> = leftTraj.readLines()
+        for (i in 1..linesL.lastIndex) {
+            val separated: List<String> = linesL.get(i).split(",")
 //            println("Velocity: " + separated.get(4) + " Acceleration: " + separated.get(5))
 //            val velocity = separated.get(4)
 //            val accel = separated.get(5)
             leftAccelerations.add(separated.get(5).toDouble())
         }
-        var linesR:List<String> = rightTraj.readLines()
-        for(i in 1..linesR.lastIndex){
-            val separated:List<String> = linesR.get(i).split(",")
+        var linesR: List<String> = rightTraj.readLines()
+        for (i in 1..linesR.lastIndex) {
+            val separated: List<String> = linesR.get(i).split(",")
 //            println("Velocity: " + separated.get(4) + " Acceleration: " + separated.get(5))
 //            val velocity = separated.get(4)
 //            val accel = separated.get(5)
@@ -101,10 +100,10 @@ class Path(path: FieldPaths) {
     }
 
     public fun getLeftVelocity(time: Double): Double {
-        return leftVelocities.get((time/timeDelta).toInt())
+        return leftVelocities.get((time / timeDelta).toInt())
     }
     public fun getRightVelocity(time: Double): Double {
-        return rightVelocities.get((time/timeDelta).toInt())
+        return rightVelocities.get((time / timeDelta).toInt())
     }
     public fun getLeftVelocityIndex(index: Int): Double {
         return leftVelocities.get(index)
@@ -128,9 +127,9 @@ class Path(path: FieldPaths) {
         return rightDistances.get(index)
     }
     public fun getHeading(time: Double): Double {
-        return robotHeadings.get((time/timeDelta).toInt())
+        return robotHeadings.get((time / timeDelta).toInt())
     }
-    public fun getHeadingIndex(index: Int): Double{
+    public fun getHeadingIndex(index: Int): Double {
         return robotHeadings.get(index)
     }
     public fun getTrajLength(): Int {

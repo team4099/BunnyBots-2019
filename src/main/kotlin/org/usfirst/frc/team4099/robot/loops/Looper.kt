@@ -1,12 +1,9 @@
 package org.usfirst.frc.team4099.robot.loops
 
-import com.team2363.logger.HelixLogger
 import edu.wpi.first.wpilibj.Notifier
 import edu.wpi.first.wpilibj.Timer
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.usfirst.frc.team4099.lib.util.CrashTrackingRunnable
 import org.usfirst.frc.team4099.robot.Constants
-import java.util.*
 
 class Looper(private val name: String) {
     private var running: Boolean = false
@@ -14,7 +11,7 @@ class Looper(private val name: String) {
     private val notifier: Notifier
     private val taskRunningLock = Any()
 
-    private val loops: MutableList<Loop> = ArrayList()
+    private val loops = mutableListOf<Loop>()
 
     private var timestamp = 0.0
     var dt = 0.0

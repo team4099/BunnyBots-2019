@@ -22,7 +22,6 @@ object JoystickUtils {
         mSignal = Math.abs(mSignal)
 
         return if (mSignal < deadbandWidth) 0.0 else sign * (mSignal - deadbandWidth) / (1.0 - deadbandWidth)
-
     }
 
     fun deadbandNoShape(signal: Double, deadbandWidth: Double): Double {
@@ -33,6 +32,5 @@ object JoystickUtils {
         mSignal = Math.abs(mSignal)
 
         return if (mSignal < deadbandWidth) 0.0 else MAX_OUTPUT * sign.toDouble() * (mSignal - deadbandWidth) / (1.0 - deadbandWidth)
-
     }
 }

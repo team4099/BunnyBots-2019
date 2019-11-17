@@ -1,14 +1,11 @@
 package org.usfirst.frc.team4099.auto.actions
 
-import java.util.*
-
 /**
  * Executes one action at a time. Useful as a member of [ParallelAction]
  */
 class SeriesAction(actions: List<Action>) : Action {
-
     private var currentAction: Action? = null
-    private val remainingActions: ArrayList<Action> = ArrayList(actions.size)
+    private val remainingActions = mutableListOf<Action>()
 
     init {
         for (action in actions) {

@@ -6,7 +6,7 @@ abstract class Subsystem {
     abstract val loop: Loop
     abstract fun outputToSmartDashboard()
     abstract fun stop()
-    //abstract fun checkSystem()
+    // abstract fun checkSystem()
     open fun zeroSensors() {}
     open fun readPeriodicInputs() {}
     open fun writePeriodicOutputs() {}

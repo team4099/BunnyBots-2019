@@ -3,7 +3,6 @@ package org.usfirst.frc.team4099.lib.util
 import edu.wpi.first.wpilibj.SerialPort
 import edu.wpi.first.wpilibj.SerialPort.Port
 
-
 /**
  * Used to command a Teensy running the photon LED control library.
  * Commands the Photon library are just strings of comma seperated numbers with a semicolon at the end
@@ -27,13 +26,12 @@ class Photon() {
 
     private val usb: SerialPort
 
-    //Set your default values here. You can set default colors that match your team colors, refer to the Color chart Above
+    // Set your default values here. You can set default colors that match your team colors, refer to the Color chart Above
     private val kDefaultAnimation = 4
     private var kDefaultColor1 = 192
     private var kDeafultColor2 = 255
     private val kDefaultRate = 2
     private val kDefaultFade = 150
-
 
     private var kAnimation = kDefaultAnimation
     private var kColor1 = kDefaultColor1
@@ -58,21 +56,21 @@ class Photon() {
         usb = SerialPort(115200, Port.kUSB)
     }
 
-    //USe this constructor to setup default colors when you construct it
+    // USe this constructor to setup default colors when you construct it
     constructor(Color1: Int, Color2: Int) : this() {
         kDefaultColor1 = Color1
         kDeafultColor2 = Color2
     }
 
-    //Build out more construcitons to set default colors, etc
+    // Build out more construcitons to set default colors, etc
 
-    //Set how many LEDs are in one of the strips, call this for each strip that you want to use.
+    // Set how many LEDs are in one of the strips, call this for each strip that you want to use.
     fun SetNumberOfLEDs(StripNum: Int, LEDcount: Int) {
         usb.writeString("3,$StripNum,$LEDcount;")
     }
 
-    //Set a new animation on a strip, must include a strip number all other values are optional and can be set seperatly.
-    fun setAnimation(StripNum: Int, vararg vals: Int) {//int Animation, int Color1, int Color2, int rate, int fade){
+    // Set a new animation on a strip, must include a strip number all other values are optional and can be set seperatly.
+    fun setAnimation(StripNum: Int, vararg vals: Int) { // int Animation, int Color1, int Color2, int rate, int fade){
         val Animation = if (vals.size > 0) vals[0] else this.kAnimation
         val Color1 = if (vals.size > 1) vals[1] else this.kColor1
         val Color2 = if (vals.size > 2) vals[2] else this.kColor2
@@ -97,11 +95,11 @@ class Photon() {
         setAnimation(StripNum, getAnimation(a), getColor(c1))
     }
 
-    fun setAnimation(StripNum: Int, a: Animation, c1: Color, rate: Int, fade: Int) { //Allows only a single color to be set
+    fun setAnimation(StripNum: Int, a: Animation, c1: Color, rate: Int, fade: Int) { // Allows only a single color to be set
         setAnimation(StripNum, getAnimation(a), getColor(c1), kColor2, rate, fade)
     }
 
-    fun setAnimation(StripNum: Int, a: Animation, c1: Color, rate: Int) { //Allows only a single color to be set but you can adjust the rate
+    fun setAnimation(StripNum: Int, a: Animation, c1: Color, rate: Int) { // Allows only a single color to be set but you can adjust the rate
         setAnimation(StripNum, getAnimation(a), getColor(c1), kColor2, rate)
     }
 
@@ -109,7 +107,7 @@ class Photon() {
         setAnimation(StripNum, getAnimation(a))
     }
 
-    //Reset all the values to your default values, useful if you want an animation to use default values, but they may have been already changed.
+    // Reset all the values to your default values, useful if you want an animation to use default values, but they may have been already changed.
     fun resetValue() {
         kAnimation = kDefaultAnimation
         kColor1 = kDefaultColor1
@@ -129,7 +127,7 @@ class Photon() {
             Photon.Color.PURPLE -> return 192
             Photon.Color.PINK -> return 224
             Photon.Color.WHITE -> return 255
-            else -> return 0 //Default to RED
+            else -> return 0 // Default to RED
         }
     }
 
@@ -167,10 +165,9 @@ class Photon() {
             Photon.Animation.PERCENTAGE -> return 97
             Photon.Animation.JUGGLE -> return 98
             Photon.Animation.SPARKLES -> return 99
-            else -> return 3 //Default to Blink
+            else -> return 3 // Default to Blink
         }
     }
-
 
     fun setColor1(c: Int) {
         kColor1 = c

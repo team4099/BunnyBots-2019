@@ -14,11 +14,9 @@ class WaitAction(private val timeToWait: Double) : Action {
     }
 
     override fun update() {
-
     }
 
     override fun done() {
-
     }
 
     override fun start() {

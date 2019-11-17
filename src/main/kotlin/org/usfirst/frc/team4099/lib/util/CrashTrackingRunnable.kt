@@ -9,7 +9,6 @@ abstract class CrashTrackingRunnable : Runnable {
             CrashTracker.logThrowableCrash("CrTrRu.run", t)
             throw t
         }
-
     }
 
     abstract fun runCrashTracked()

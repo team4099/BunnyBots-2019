@@ -1,11 +1,9 @@
 package org.usfirst.frc.team4099.auto.actions
 
-import edu.wpi.first.wpilibj.Timer
-import org.usfirst.frc.team4099.lib.drive.DriveSignal
-import org.usfirst.frc.team4099.lib.util.Utils
-import org.usfirst.frc.team4099.robot.subsystems.Drive
 import kotlin.math.abs
 import kotlin.math.sign
+import org.usfirst.frc.team4099.lib.drive.DriveSignal
+import org.usfirst.frc.team4099.robot.subsystems.Drive
 
 /**
  * Created by Oksana on 2/16/2017.

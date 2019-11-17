@@ -5,7 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX
 import org.usfirst.frc.team4099.robot.Constants
 import org.usfirst.frc.team4099.robot.loops.Loop
 
-class BallIntake: Subsystem() {
+class BallIntake : Subsystem() {
     private val talon = TalonSRX(Constants.Intake.INTAKE_TALON)
 
     init {

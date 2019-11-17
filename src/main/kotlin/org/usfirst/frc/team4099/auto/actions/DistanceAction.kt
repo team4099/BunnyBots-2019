@@ -2,11 +2,10 @@ package org.usfirst.frc.team4099.auto.actions
 
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
-import org.usfirst.frc.team4099.lib.drive.DriveSignal
-import org.usfirst.frc.team4099.lib.util.Utils
-import org.usfirst.frc.team4099.robot.subsystems.Drive
 import kotlin.math.abs
 import kotlin.math.sign
+import org.usfirst.frc.team4099.lib.drive.DriveSignal
+import org.usfirst.frc.team4099.robot.subsystems.Drive
 
 class DistanceAction(inchesToMove: Double, slowMode: Boolean) : Action {
     private val drive = Drive.instance

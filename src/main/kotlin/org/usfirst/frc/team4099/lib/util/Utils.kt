@@ -1,17 +1,11 @@
 package org.usfirst.frc.team4099.lib.util
 
-import org.usfirst.frc.team4099.robot.Constants
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-
 object Utils {
     /**
      * Limits the given input to the given magnitude.
-     * @param v         value to limit
-     * @param limit     limited magnitude
-     * @return          the limited value
+     * @param v value to limit
+     * @param limit limited magnitude
+     * @return the limited value
      */
 
     fun limit(v: Double, limit: Double): Double {
@@ -68,5 +62,4 @@ object Utils {
         }
         return total / list.size
     }
-
 }
