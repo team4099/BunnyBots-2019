@@ -3,7 +3,13 @@ package org.usfirst.frc.team4099.robot
 class Constants {
 
 
+    object Universal {
+        val TIMEOUT = 10
+        val EPSILON = 1E-9
+    }
+
     object Drive {
+        
         val LEFT_MASTER_ID = 10
         val LEFT_SLAVE_1_ID = 9
         // val LEFT_SLAVE_2_ID = 5
@@ -13,8 +19,8 @@ class Constants {
 
         val HIGH_GEAR_MAX_SETPOINT = 17.0  //17 fps
 
-        val MAX_LEFT_OPENLOOP_VEL = 1.0
-        val MAX_RIGHT_OPENLOOP_VEL = 1.0
+        val MAX_LEFT_OPENLOOP_POWER = 1.0
+        val MAX_RIGHT_OPENLOOP_POWER = 1.0
 
         val SHIFTER_FORWARD_ID = 7
         val SHIFTER_REVERSE_ID = 0
@@ -37,13 +43,27 @@ class Constants {
         val LEFT_V_INTERCEPT_REVERSE_HIGH = -0.1856
         val RIGHT_V_INTERCEPT_REVERSE_HIGH = -0.2003
 
-        val FEET_PER_SEC_TO_RPM = 6.8 * 60.0 //10.4
+        val FEET_PER_SEC_TO_NATIVE = 6.8 * 60.0 //10.4
 
+        val CLOSED_LOOP_RAMP = 0.0
 
+        val PERCENT_DEADBAND = 0.04
+
+        val CONTINUOUS_CURRENT_LIMIT = 40
+
+        val AUTO_NOMINAL_OUTPUT = 0.0
+        val AUTO_PEAK_OUTPUT = 0.0
+
+        val NATIVE_TO_REVS = 12/2336
+
+        val WHEEL_DIAMETER_INCHES = 6
+        val WHEEL_TRACK_WIDTH_INCHES = 27
+
+        val TRACK_SCRUB_FACTOR = 1.1
     }
 
     object Wheels {
-        val DRIVE_WHEEL_DIAMETER_INCHES = 6
+
     }
 
 
