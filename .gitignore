@@ -80,3 +80,11 @@ DeepSpace-2019.ipr
 .idea/misc.xml
 dist
 dist/FRCUserProgram.jar
+
+.settings
+.DSStore
+._.DSStore
+**/.DSStore
+**/._.DSStore
+.classpath
+.project

@@ -1,15 +1,12 @@
 package org.usfirst.frc.team4099.robot
 
 class Constants {
-
-
     object Universal {
         val TIMEOUT = 10
         val EPSILON = 1E-9
     }
 
     object Drive {
-        
         val LEFT_MASTER_ID = 10
         val LEFT_SLAVE_1_ID = 9
         // val LEFT_SLAVE_2_ID = 5
@@ -66,8 +63,6 @@ class Constants {
 
     }
 
-
-
     object Gains {
         val LEFT_LOW_KP = 0.0000//.1 * 1500 / 70
         val LEFT_LOW_KI = 0.0000
@@ -90,11 +85,7 @@ class Constants {
         val RIGHT_HIGH_KI = 0.0000
         val RIGHT_HIGH_KD = 0.0000
         val RIGHT_HIGH_KF = 0.0000//1023.0 / 4420.0
-
-
     }
-
-
 
     object Loopers {
         val LOOPER_DT = 0.02 // 50 Hz
@@ -125,5 +116,4 @@ class Constants {
     object Intake {
         val INTAKE_TALON = 2
     }
-
 }

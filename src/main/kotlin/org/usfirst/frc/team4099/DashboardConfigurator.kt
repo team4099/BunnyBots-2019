@@ -19,12 +19,10 @@ import org.usfirst.frc.team4099.robot.Constants.Autonomous.SELECTED_AUTO_START_P
  * invariants.
  */
 object DashboardConfigurator {
-
     fun getAutonomousMode(): AutoModeBase {
         var selectedAutoMode: AutoModeBase
-        when (SmartDashboard.getString("/SmartDashboard/autonomous/selectedAutoMode", "empty")) {
-            "HatchPanelOnly" -> selectedAutoMode = HatchPanelOnly(getStartingPosition(), 0.0)
-            else -> selectedAutoMode = HatchPanelOnly(getStartingPosition(), 0.0)
+        selectedAutoMode = when (SmartDashboard.getString("/SmartDashboard/autonomous/selectedAutoMode", "empty")) {
+            else -> StandStillMode()
         }
         return selectedAutoMode
     }
@@ -73,5 +71,4 @@ object DashboardConfigurator {
     fun initDashboard() {
 
     }
-    
 }

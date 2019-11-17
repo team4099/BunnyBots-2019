@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4099.robot
 
+import com.team2363.logger.HelixLogger
 import edu.wpi.first.cameraserver.CameraServer
 import org.usfirst.frc.team4099.lib.util.Utils
 
@@ -24,18 +25,11 @@ class Robot : TimedRobot() {
     private val controlBoard = ControlBoard.instance
     private val disabledLooper = Looper("disabledLooper")
     private val enabledLooper = Looper("enabledLooper")
-  //  private val leds = LED.instance
-
     private val cheesyDriveHelper = CheesyDriveHelper()
-
-   // private val intake = Intake.instance
-
-
 
     init {
         CrashTracker.logRobotConstruction()
     }
-
 
     override fun robotInit() {
         try {
@@ -43,11 +37,8 @@ class Robot : TimedRobot() {
 
             DashboardConfigurator.initDashboard()
 
-
             enabledLooper.register(drive.loop)
-
             enabledLooper.register(BrownoutDefender.instance)
-
             disabledLooper.register(VoltageEstimator.instance)
 
         } catch (t: Throwable) {
@@ -65,12 +56,9 @@ class Robot : TimedRobot() {
             CrashTracker.logThrowableCrash("disabledInit", t)
             throw t
         }
-
     }
 
-    override fun autonomousInit() {
-
-    }
+    override fun autonomousInit() {}
 
     override fun teleopInit() {
         try {
@@ -112,18 +100,11 @@ class Robot : TimedRobot() {
 
     override fun teleopPeriodic() {
         try {
-
-            val driveSig = cheesyDriveHelper.curvatureDrive(controlBoard.throttle, controlBoard.turn, Utils.around(controlBoard.throttle, 0.0, 0.1))
-            drive.setVelocitySetpoint(6.0 * controlBoard.throttle + controlBoard.turn, 6.0 * controlBoard.throttle - controlBoard.turn, 0.0, 0.0)
-
-        }
-
-
-        catch (t: Throwable) {
+            drive.setCheesyishDrive(controlBoard.throttle, controlBoard.turn, Utils.around(controlBoard.throttle, 0.0, 0.1))
+        } catch (t: Throwable) {
             CrashTracker.logThrowableCrash("teleopPeriodic", t)
             throw t
         }
-
     }
 
     override fun testInit() {
@@ -138,10 +119,8 @@ class Robot : TimedRobot() {
 
 
 
-    override fun testPeriodic(){
+    override fun testPeriodic() {}
 
-
-    }
     /**
      * Log information from all subsystems onto the SmartDashboard
      */

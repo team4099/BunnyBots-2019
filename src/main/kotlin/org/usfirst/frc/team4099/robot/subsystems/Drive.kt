@@ -24,15 +24,24 @@ class Drive private constructor() : Subsystem() {
     private val leftMasterTalon  = CANMotorControllerFactory.createDefaultTalon(Constants.Drive.LEFT_MASTER_ID)
     private val leftSlaveTalon = CANMotorControllerFactory.createPermanentSlaveTalon(Constants.Drive.LEFT_SLAVE_1_ID, Constants.Drive.LEFT_MASTER_ID)
 
-
     private val ahrs: AHRS
-
     private var path: Path
-
     private var segment: Int
     private var trajLength: Int
     private var lastLeftError: Double
     private var lastRightError: Double
+    var yaw: Double = 0.0
+        get() {
+            if (ahrs.isConnected) field = ahrs.yaw.toDouble()
+            else TODO("Error")
+            return field
+        }
+    var angle: Double = 0.0
+        get() {
+            if (ahrs.isConnected) field = ahrs.angle.toDouble()
+            else TODO("Error")
+            return field
+        }
 
 
     var brakeMode: NeutralMode = NeutralMode.Coast //sets whether the brake mode should be coast (no resistance) or by force
@@ -146,7 +155,7 @@ class Drive private constructor() : Subsystem() {
         }
     }
 
-    override val loop: Loop = object : Loop {
+    override val loop = object : Loop {
         override fun onStart() {
             setOpenLoop(DriveSignal.NEUTRAL)
         }
@@ -179,8 +188,8 @@ class Drive private constructor() : Subsystem() {
     }
 
     override fun outputToSmartDashboard() {
-        if (this.getAHRS() != null) {
-            SmartDashboard.putNumber("gyro", this.getAHRS()!!.yaw.toDouble())
+        if (ahrs.isConnected) {
+            SmartDashboard.putNumber("gyro", yaw)
         } else {
             SmartDashboard.putNumber("gyro", -31337.0)
         }
@@ -194,7 +203,9 @@ class Drive private constructor() : Subsystem() {
 
     override fun zeroSensors() {
         if (ahrs.isConnected) {
-            ahrs.reset()
+            while (!Utils.around(yaw, 0.0, 1.0)) {
+                ahrs.reset()
+            }
         }
         resetEncoders()
     }
@@ -226,10 +237,6 @@ class Drive private constructor() : Subsystem() {
     fun resetEncoders() {
         rightMasterTalon.sensorCollection.setQuadraturePosition(0, Constants.Universal.TIMEOUT)
         leftMasterTalon.sensorCollection.setQuadraturePosition(0, Constants.Universal.TIMEOUT)
-    }
-
-    fun getAHRS(): AHRS? {
-        return if (ahrs.isConnected) ahrs else null
     }
 
     fun startLiveWindowMode() {
@@ -300,7 +307,7 @@ class Drive private constructor() : Subsystem() {
         }
 
         wheel *= kWheelGain
-        var driveSignal = if (abs(wheel) < Constants.Universal.EPSILON) {
+        val driveSignal = if (abs(wheel) < Constants.Universal.EPSILON) {
             DriveSignal(throttle, throttle)
         } else {
             val deltaV = Constants.Drive.WHEEL_TRACK_WIDTH_INCHES * wheel / (2 * Constants.Drive.TRACK_SCRUB_FACTOR)
@@ -469,8 +476,6 @@ class Drive private constructor() : Subsystem() {
     fun isPathFinished(): Boolean {
         return segment >= trajLength - 132
     }
-
-
 
     private fun nativeToInches(nativeUnits: Double): Double {
         return nativeUnits * Constants.Drive.NATIVE_TO_REVS * Constants.Drive.WHEEL_DIAMETER_INCHES * Math.PI

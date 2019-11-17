@@ -1,11 +1,11 @@
-    plugins {
+plugins {
     id "idea"
     id "org.jetbrains.kotlin.jvm" version "1.3.11"
-    id "edu.wpi.first.GradleRIO" version "2019.3.2"
+    id "edu.wpi.first.GradleRIO" version "2019.4.1"
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 def TEAM = 4099
 // do not change main class (does not run without it being Main
@@ -43,6 +43,7 @@ deploy {
 repositories {
     mavenCentral()
     jcenter()
+    maven { url "https://jitpack.io" }
     maven { url "https://kotlin.bintray.com/kotlinx" }
 }
 
@@ -55,6 +56,9 @@ dependencies {
 
     // We need to add the Kotlin stdlib in order to use most Kotlin language features.
     compile "org.jetbrains.kotlin:kotlin-stdlib"
+
+    // HelixLogger and HelixEvents
+    compile 'com.github.team4099:HelixUtilities:master-SNAPSHOT'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
