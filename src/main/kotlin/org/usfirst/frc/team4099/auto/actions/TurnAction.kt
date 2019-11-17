@@ -3,6 +3,7 @@ package org.usfirst.frc.team4099.auto.actions
 import kotlin.math.abs
 import kotlin.math.sign
 import org.usfirst.frc.team4099.lib.drive.DriveSignal
+import org.usfirst.frc.team4099.robot.Constants
 import org.usfirst.frc.team4099.robot.subsystems.Drive
 
 /**
@@ -12,7 +13,7 @@ class TurnAction(angleToTurn: Double, slowMode: Boolean) : Action {
     private val drive = Drive.instance
     private val direction = sign(angleToTurn)
     private val angleToTurn = abs(angleToTurn)
-    private var power = 0.5
+    private var power = Constants.Autonomous.TURN_POWER
     private var startAngle = 0.0
     private var done = false
 
@@ -20,7 +21,7 @@ class TurnAction(angleToTurn: Double, slowMode: Boolean) : Action {
 
     init {
         if (slowMode) {
-            this.power = .2
+            this.power = Constants.Autonomous.SLOW_TURN_POWER
         }
     }
 

@@ -107,7 +107,11 @@ class Robot : TimedRobot() {
 
     override fun teleopPeriodic() {
         try {
-            drive.setCheesyishDrive(controlBoard.throttle, controlBoard.turn, Utils.around(controlBoard.throttle, 0.0, 0.1))
+            drive.setCheesyishDrive(
+                controlBoard.throttle,
+                controlBoard.turn,
+                Utils.around(controlBoard.throttle, 0.0, Constants.Joysticks.QUICK_TURN_THROTTLE_TOLERANCE)
+            )
         } catch (t: Throwable) {
             CrashTracker.logThrowableCrash("teleopPeriodic", t)
             throw t

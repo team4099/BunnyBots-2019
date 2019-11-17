@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Joystick
  * Flight Mode (Mode Light = Off)
  */
 
+@Suppress("MagicNumber")
 class XboxOneGamepad(port: Int) : Joystick(port), Gamepad {
     override val leftXAxis: Double
         get() = this.getRawAxis(0)

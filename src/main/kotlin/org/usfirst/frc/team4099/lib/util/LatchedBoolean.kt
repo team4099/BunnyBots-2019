@@ -13,9 +13,9 @@ class LatchedBoolean {
 
     fun update(newValue: Boolean): Boolean {
         var ret = false
-        if (newValue && !last)
+        if (newValue && !last) {
             ret = true
-
+        }
         last = newValue
         return ret
     }

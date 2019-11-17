@@ -22,20 +22,23 @@ import edu.wpi.first.wpilibj.SerialPort.Port
  * White(255) - This isn't normally on the HUE chart but used in this library to make animaitons easier
  * @author Spectrum3847
  */
+
+@Suppress("LongParameterList", "MaximumLineLength", "MaxLineLength", "VariableNaming",
+    "FunctionParameterNaming", "ConstructorParameterNaming", "MagicNumber", "ReturnCount")
 class Photon() {
 
-    private val usb: SerialPort
+    private val usb: SerialPort = SerialPort(115200, Port.kUSB)
 
-    // Set your default values here. You can set default colors that match your team colors, refer to the Color chart Above
+    // Set your default values here. You can set default colors that match your team colors, refer to the Color chart
     private val kDefaultAnimation = 4
     private var kDefaultColor1 = 192
-    private var kDeafultColor2 = 255
+    private var kDefaultColor2 = 255
     private val kDefaultRate = 2
     private val kDefaultFade = 150
 
     private var kAnimation = kDefaultAnimation
     private var kColor1 = kDefaultColor1
-    private var kColor2 = kDeafultColor2
+    private var kColor2 = kDefaultColor2
     private var kRate = kDefaultRate
     private var kFade = kDefaultFade
 
@@ -52,31 +55,27 @@ class Photon() {
         PERCENTAGE, RAINBOW, JUGGLE, SPARKLES
     }
 
-    init {
-        usb = SerialPort(115200, Port.kUSB)
-    }
-
     // USe this constructor to setup default colors when you construct it
     constructor(Color1: Int, Color2: Int) : this() {
         kDefaultColor1 = Color1
-        kDeafultColor2 = Color2
+        kDefaultColor2 = Color2
     }
 
     // Build out more construcitons to set default colors, etc
 
     // Set how many LEDs are in one of the strips, call this for each strip that you want to use.
-    fun SetNumberOfLEDs(StripNum: Int, LEDcount: Int) {
-        usb.writeString("3,$StripNum,$LEDcount;")
+    fun setNumberOfLEDs(stripNum: Int, ledCount: Int) {
+        usb.writeString("3,$stripNum,$ledCount;")
     }
 
     // Set a new animation on a strip, must include a strip number all other values are optional and can be set seperatly.
-    fun setAnimation(StripNum: Int, vararg vals: Int) { // int Animation, int Color1, int Color2, int rate, int fade){
-        val Animation = if (vals.size > 0) vals[0] else this.kAnimation
-        val Color1 = if (vals.size > 1) vals[1] else this.kColor1
-        val Color2 = if (vals.size > 2) vals[2] else this.kColor2
-        val Rate = if (vals.size > 3) vals[3] else this.kRate
-        val Fade = if (vals.size > 4) vals[4] else this.kFade
-        usb.writeString("2,$StripNum,$Animation,$Color1,$Color2,$Rate,$Fade;")
+    fun setAnimation(stripNum: Int, vararg vals: Int) { // int Animation, int Color1, int Color2, int rate, int fade){
+        val animation = if (vals.size > 0) vals[0] else this.kAnimation
+        val color1 = if (vals.size > 1) vals[1] else this.kColor1
+        val color2 = if (vals.size > 2) vals[2] else this.kColor2
+        val rate = if (vals.size > 3) vals[3] else this.kRate
+        val fade = if (vals.size > 4) vals[4] else this.kFade
+        usb.writeString("2,$stripNum,$animation,$color1,$color2,$rate,$fade;")
     }
 
     fun setAnimation(StripNum: Int, a: Animation, c1: Color, c2: Color, rate: Int, fade: Int) {
@@ -95,11 +94,13 @@ class Photon() {
         setAnimation(StripNum, getAnimation(a), getColor(c1))
     }
 
-    fun setAnimation(StripNum: Int, a: Animation, c1: Color, rate: Int, fade: Int) { // Allows only a single color to be set
+    // Allows only a single color to be set
+    fun setAnimation(StripNum: Int, a: Animation, c1: Color, rate: Int, fade: Int) {
         setAnimation(StripNum, getAnimation(a), getColor(c1), kColor2, rate, fade)
     }
 
-    fun setAnimation(StripNum: Int, a: Animation, c1: Color, rate: Int) { // Allows only a single color to be set but you can adjust the rate
+    // Allows only a single color to be set but you can adjust the rate
+    fun setAnimation(StripNum: Int, a: Animation, c1: Color, rate: Int) {
         setAnimation(StripNum, getAnimation(a), getColor(c1), kColor2, rate)
     }
 
@@ -107,11 +108,12 @@ class Photon() {
         setAnimation(StripNum, getAnimation(a))
     }
 
-    // Reset all the values to your default values, useful if you want an animation to use default values, but they may have been already changed.
+    // Reset all the values to your default values, useful if you want an animation to use default values,
+    // but they may have been already changed.
     fun resetValue() {
         kAnimation = kDefaultAnimation
         kColor1 = kDefaultColor1
-        kColor2 = kDeafultColor2
+        kColor2 = kDefaultColor2
         kRate = kDefaultRate
         kFade = kDefaultFade
     }

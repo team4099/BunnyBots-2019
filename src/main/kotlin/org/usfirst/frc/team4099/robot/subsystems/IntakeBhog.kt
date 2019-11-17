@@ -8,10 +8,10 @@ import org.usfirst.frc.team4099.robot.Constants
 import org.usfirst.frc.team4099.robot.loops.Loop
 
 class IntakeBhog : Subsystem() {
-    private val talon = TalonSRX(Constants.Intake.INTAKE_TALON)
+    private val talon = TalonSRX(Constants.Intake.TALON_ID)
 
     init {
-        talon.configPeakCurrentLimit(20)
+        talon.configContinuousCurrentLimit(Constants.Intake.CURRENT_LIMIT)
         talon.setNeutralMode(NeutralMode.Brake)
         talon.inverted = false
     }

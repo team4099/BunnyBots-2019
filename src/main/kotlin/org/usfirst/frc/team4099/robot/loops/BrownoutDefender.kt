@@ -2,6 +2,8 @@ package org.usfirst.frc.team4099.robot.loops
 
 import edu.wpi.first.wpilibj.Compressor
 import edu.wpi.first.wpilibj.PowerDistributionPanel
+import org.usfirst.frc.team4099.robot.Constants
+
 // import org.usfirst.frc.team4099.robot.subsystems.Elevator
 
 /** Manages the shutting off of components and subsystems when at risk of brownout.
@@ -20,7 +22,8 @@ class BrownoutDefender private constructor() : Loop {
     }
 
     override fun onLoop(timestamp: Double) {
-        if (pdp.voltage < 10 || pdp.totalCurrent > 70) {
+        if (pdp.voltage < Constants.BrownoutDefender.COMPRESSOR_STOP_VOLTAGE ||
+            pdp.totalCurrent > Constants.BrownoutDefender.COMPRESSOR_STOP_CURRENT) {
             compressor.stop()
         } else {
             compressor.start()

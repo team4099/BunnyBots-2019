@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Joystick
  * Flight Mode (Mode Light = Off)
  */
 
+@Suppress("MagicNumber")
 class DualShock4Gamepad(port: Int) : Joystick(port), Gamepad {
 
     override val leftXAxis: Double

@@ -6,19 +6,19 @@ import org.usfirst.frc.team4099.robot.Constants
 import org.usfirst.frc.team4099.robot.loops.Loop
 
 class BallIntake : Subsystem() {
-    private val talon = TalonSRX(Constants.Intake.INTAKE_TALON)
+    private val talon = TalonSRX(Constants.Intake.TALON_ID)
 
     init {
-        talon.configPeakCurrentLimit(20) // Max amount of current you can send to the motor.
+        talon.configContinuousCurrentLimit(Constants.Intake.CURRENT_LIMIT) // Max amount of current you can send to the motor.
         talon.setNeutralMode(NeutralMode.Coast)
         talon.inverted = false
     }
 
-    enum class IntakeStage {
+    enum class IntakeState {
         IN, STOP
     }
 
-    var intakeStage = IntakeStage.STOP
+    var intakeStage = IntakeState.STOP
 
     override val loop = object : Loop {
         override fun onStart(timestamp: Double) {

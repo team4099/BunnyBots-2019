@@ -11,9 +11,6 @@ import com.team2363.logger.HelixEvents
 import com.team2363.logger.HelixLogger
 import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.sin
 import org.usfirst.frc.team4099.auto.paths.FieldPaths
 import org.usfirst.frc.team4099.auto.paths.Path
 import org.usfirst.frc.team4099.lib.drive.DriveSignal
@@ -21,13 +18,23 @@ import org.usfirst.frc.team4099.lib.util.CANMotorControllerFactory
 import org.usfirst.frc.team4099.lib.util.Utils
 import org.usfirst.frc.team4099.robot.Constants
 import org.usfirst.frc.team4099.robot.loops.Loop
+import kotlin.math.abs
+import kotlin.math.ln
+import kotlin.math.max
+import kotlin.math.sin
 
 class Drive private constructor() : Subsystem() {
     private val rightMasterTalon = CANMotorControllerFactory.createDefaultTalon(Constants.Drive.RIGHT_MASTER_ID)
-    private val rightSlaveTalon = CANMotorControllerFactory.createPermanentSlaveTalon(Constants.Drive.RIGHT_SLAVE_1_ID, Constants.Drive.RIGHT_MASTER_ID)
+    private val rightSlaveTalon = CANMotorControllerFactory.createPermanentSlaveTalon(
+        Constants.Drive.RIGHT_SLAVE_1_ID,
+        Constants.Drive.RIGHT_MASTER_ID
+    )
 
     private val leftMasterTalon = CANMotorControllerFactory.createDefaultTalon(Constants.Drive.LEFT_MASTER_ID)
-    private val leftSlaveTalon = CANMotorControllerFactory.createPermanentSlaveTalon(Constants.Drive.LEFT_SLAVE_1_ID, Constants.Drive.LEFT_MASTER_ID)
+    private val leftSlaveTalon = CANMotorControllerFactory.createPermanentSlaveTalon(
+        Constants.Drive.LEFT_SLAVE_1_ID,
+        Constants.Drive.LEFT_MASTER_ID
+    )
 
     private val ahrs: AHRS
     private var path: Path
@@ -52,7 +59,8 @@ class Drive private constructor() : Subsystem() {
             return field
         }
 
-    var brakeMode: NeutralMode = NeutralMode.Coast // sets whether the brake mode should be coast (no resistance) or by force
+    var brakeMode: NeutralMode =
+        NeutralMode.Coast // sets whether the brake mode should be coast (no resistance) or by force
         set(type) {
             if (brakeMode != type) {
                 rightMasterTalon.setNeutralMode(type)
@@ -80,8 +88,14 @@ class Drive private constructor() : Subsystem() {
         leftMasterTalon.configFactoryDefault()
         leftSlaveTalon.configFactoryDefault()
 
-        rightMasterTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, Constants.Universal.TIMEOUT)
-        leftMasterTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, Constants.Universal.TIMEOUT)
+        rightMasterTalon.setStatusFramePeriod(
+            StatusFrameEnhanced.Status_2_Feedback0,
+            Constants.Drive.STATUS_FRAME_PERIOD_MS, Constants.Universal.TIMEOUT
+        )
+        leftMasterTalon.setStatusFramePeriod(
+            StatusFrameEnhanced.Status_2_Feedback0,
+            Constants.Drive.STATUS_FRAME_PERIOD_MS, Constants.Universal.TIMEOUT
+        )
 
         rightMasterTalon.inverted = true
         rightSlaveTalon.inverted = true
@@ -93,23 +107,42 @@ class Drive private constructor() : Subsystem() {
         leftMasterTalon.setSensorPhase(true)
         leftSlaveTalon.setSensorPhase(true)
 
-        rightMasterTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.Universal.TIMEOUT)
-        rightMasterTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 1, Constants.Universal.TIMEOUT)
+        rightMasterTalon.configSelectedFeedbackSensor(
+            FeedbackDevice.CTRE_MagEncoder_Relative,
+            0,
+            Constants.Universal.TIMEOUT
+        )
+        rightMasterTalon.configSelectedFeedbackSensor(
+            FeedbackDevice.CTRE_MagEncoder_Relative,
+            1,
+            Constants.Universal.TIMEOUT
+        )
 
-        leftMasterTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.Universal.TIMEOUT)
-        leftMasterTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 1, Constants.Universal.TIMEOUT)
+        leftMasterTalon.configSelectedFeedbackSensor(
+            FeedbackDevice.CTRE_MagEncoder_Relative,
+            0,
+            Constants.Universal.TIMEOUT
+        )
+        leftMasterTalon.configSelectedFeedbackSensor(
+            FeedbackDevice.CTRE_MagEncoder_Relative,
+            1,
+            Constants.Universal.TIMEOUT
+        )
 
         rightMasterTalon.enableVoltageCompensation(true)
-        rightMasterTalon.configVoltageCompSaturation(12.0, Constants.Universal.TIMEOUT)
+        rightMasterTalon.configVoltageCompSaturation(Constants.Drive.VOLTAGE_COMP_LEVEL, Constants.Universal.TIMEOUT)
         leftMasterTalon.enableVoltageCompensation(true)
-        leftMasterTalon.configVoltageCompSaturation(12.0, Constants.Universal.TIMEOUT)
+        leftMasterTalon.configVoltageCompSaturation(Constants.Drive.VOLTAGE_COMP_LEVEL, Constants.Universal.TIMEOUT)
 
         rightMasterTalon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_50Ms, Constants.Universal.TIMEOUT)
         leftMasterTalon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_50Ms, Constants.Universal.TIMEOUT)
 
         rightMasterTalon.configClosedloopRamp(Constants.Drive.CLOSED_LOOP_RAMP, Constants.Universal.TIMEOUT)
         leftMasterTalon.configClosedloopRamp(Constants.Drive.CLOSED_LOOP_RAMP, Constants.Universal.TIMEOUT)
-        rightMasterTalon.configNeutralDeadband(Constants.Drive.PERCENT_DEADBAND, Constants.Universal.TIMEOUT) // 254 used 0 for timeout
+        rightMasterTalon.configNeutralDeadband(
+            Constants.Drive.PERCENT_DEADBAND,
+            Constants.Universal.TIMEOUT
+        ) // 254 used 0 for timeout
         leftMasterTalon.configNeutralDeadband(Constants.Drive.PERCENT_DEADBAND, Constants.Universal.TIMEOUT)
 
         // TODO: SET CONVERSION FACTORS
@@ -134,8 +167,14 @@ class Drive private constructor() : Subsystem() {
         rightMasterTalon.config_kD(1, Constants.Gains.RIGHT_HIGH_KD, Constants.Universal.TIMEOUT)
         rightMasterTalon.config_kF(1, Constants.Gains.RIGHT_HIGH_KF, Constants.Universal.TIMEOUT)
 
-        rightMasterTalon.configContinuousCurrentLimit(Constants.Drive.CONTINUOUS_CURRENT_LIMIT, Constants.Universal.TIMEOUT)
-        leftMasterTalon.configContinuousCurrentLimit(Constants.Drive.CONTINUOUS_CURRENT_LIMIT, Constants.Universal.TIMEOUT)
+        rightMasterTalon.configContinuousCurrentLimit(
+            Constants.Drive.CONTINUOUS_CURRENT_LIMIT,
+            Constants.Universal.TIMEOUT
+        )
+        leftMasterTalon.configContinuousCurrentLimit(
+            Constants.Drive.CONTINUOUS_CURRENT_LIMIT,
+            Constants.Universal.TIMEOUT
+        )
 
         setOpenLoop(DriveSignal.NEUTRAL)
 
@@ -171,7 +210,8 @@ class Drive private constructor() : Subsystem() {
                         leftTargetVel = 0.0
                         rightTargetVel = 0.0
                     }
-                    DriveControlState.VELOCITY_SETPOINT -> {}
+                    DriveControlState.VELOCITY_SETPOINT -> {
+                    }
                     DriveControlState.PATH_FOLLOWING -> {
                         updatePathFollowing()
                     }
@@ -181,7 +221,8 @@ class Drive private constructor() : Subsystem() {
                         // updateTurnToHeading(timestamp)
                     }
                     else -> {
-                        HelixEvents.getInstance().addEvent("DRIVETRAIN", "Unexpected drive control state: $currentState")
+                        HelixEvents.getInstance()
+                            .addEvent("DRIVETRAIN", "Unexpected drive control state: $currentState")
                     }
                 }
             }
@@ -216,14 +257,8 @@ class Drive private constructor() : Subsystem() {
         if (ahrs.isConnected) {
             SmartDashboard.putNumber("gyro", yaw)
         } else {
-            SmartDashboard.putNumber("gyro", -31337.0)
+            SmartDashboard.putNumber("gyro", Constants.Drive.GYRO_BAD_VALUE)
         }
-//        SmartDashboard.putNumber("leftSpark", leftMasterSpark.busVoltage)
-//        SmartDashboard.putNumber("rightSpark", rightMasterSpark.busVoltage)
-//        SmartDashboard.putNumber("leftSparkCurrent", leftMasterSpark.outputCurrent)
-//        SmartDashboard.putNumber("rightSparkCurrent", rightMasterSpark.outputCurrent)
-//        SmartDashboard.putNumber("leftEncoderInches", leftEncoder.position)
-//        SmartDashboard.putNumber("rightEncoderInches", rightEncoder.position)
     }
 
     override fun zeroSensors() {
@@ -246,7 +281,10 @@ class Drive private constructor() : Subsystem() {
             brakeMode = NeutralMode.Coast
             HelixEvents.getInstance().addEvent("DRIVETRAIN", "Entered open loop control")
         }
-        setLeftRightPower(signal.leftMotor * Constants.Drive.MAX_LEFT_OPENLOOP_POWER, signal.rightMotor * Constants.Drive.MAX_RIGHT_OPENLOOP_POWER)
+        setLeftRightPower(
+            signal.leftMotor * Constants.Drive.MAX_LEFT_OPEN_LOOP_POWER,
+            signal.rightMotor * Constants.Drive.MAX_RIGHT_OPEN_LOOP_POWER
+        )
     }
 
     /**
@@ -266,6 +304,8 @@ class Drive private constructor() : Subsystem() {
         leftMasterTalon.sensorCollection.setQuadraturePosition(0, Constants.Universal.TIMEOUT)
     }
 
+    // Copied from WPIlib arcade drive with no functional modification
+    @Suppress("MagicNumber")
     @Synchronized
     fun arcadeDrive(outputMagnitude: Double, curve: Double) {
         val leftOutput: Double
@@ -273,7 +313,7 @@ class Drive private constructor() : Subsystem() {
 
         when {
             curve < 0 -> {
-                val value = Math.log(-curve)
+                val value = ln(-curve)
                 var ratio = (value - .5) / (value + .5)
                 if (ratio == 0.0) {
                     ratio = .0000000001
@@ -282,7 +322,7 @@ class Drive private constructor() : Subsystem() {
                 rightOutput = outputMagnitude
             }
             curve > 0 -> {
-                val value = Math.log(curve)
+                val value = ln(curve)
                 var ratio = (value - .5) / (value + .5)
                 if (ratio == 0.0) {
                     ratio = .0000000001
@@ -301,32 +341,30 @@ class Drive private constructor() : Subsystem() {
     // thank you team 254 but i like 148 better...
     @Synchronized
     fun setCheesyishDrive(throttle: Double, wheel: Double, quickTurn: Boolean) {
-        var _throttle = throttle
-        var _wheel = wheel
-        if (Utils.around(_throttle, 0.0, 0.04)) {
-            _throttle = 0.0
+        var mThrottle = throttle
+        var mWheel = wheel
+        if (Utils.around(mThrottle, 0.0, Constants.Joysticks.THROTTLE_DEADBAND)) {
+            mThrottle = 0.0
         }
 
-        if (Utils.around(_wheel, 0.0, 0.035)) {
-            _wheel = 0.0
+        if (Utils.around(mWheel, 0.0, Constants.Joysticks.TURN_DEADBAND)) {
+            mWheel = 0.0
         }
 
-        val kWheelGain = 0.05
-        val kWheelNonlinearity = 0.05
-        val denominator = sin(Math.PI / 2.0 * kWheelNonlinearity)
+        val denominator = sin(Math.PI / 2.0 * Constants.Drive.WHEEL_NON_LINEARITY)
         // Apply a sin function that's scaled to make it feel better.
         if (!quickTurn) {
-            _wheel = sin(Math.PI / 2.0 * kWheelNonlinearity * _wheel)
-            _wheel = sin(Math.PI / 2.0 * kWheelNonlinearity * _wheel)
-            _wheel = _wheel / (denominator * denominator) * abs(_throttle)
+            mWheel = sin(Math.PI / 2.0 * Constants.Drive.WHEEL_NON_LINEARITY * mWheel)
+            mWheel = sin(Math.PI / 2.0 * Constants.Drive.WHEEL_NON_LINEARITY * mWheel)
+            mWheel = mWheel / (denominator * denominator) * abs(mThrottle)
         }
 
-        _wheel *= kWheelGain
-        val driveSignal = if (abs(_wheel) < Constants.Universal.EPSILON) {
-            DriveSignal(_throttle, _throttle)
+        mWheel *= Constants.Drive.WHEEL_GAIN
+        val driveSignal = if (abs(mWheel) < Constants.Universal.EPSILON) {
+            DriveSignal(mThrottle, mThrottle)
         } else {
-            val deltaV = Constants.Drive.WHEEL_TRACK_WIDTH_INCHES * _wheel / (2 * Constants.Drive.TRACK_SCRUB_FACTOR)
-            DriveSignal(_throttle - deltaV, _throttle + deltaV)
+            val deltaV = Constants.Drive.WHEEL_TRACK_WIDTH_INCHES * mWheel / (2 * Constants.Drive.TRACK_SCRUB_FACTOR)
+            DriveSignal(mThrottle - deltaV, mThrottle + deltaV)
         }
 
         val scalingFactor = max(1.0, max(abs(driveSignal.leftMotor), abs(driveSignal.rightMotor)))
@@ -350,25 +388,43 @@ class Drive private constructor() : Subsystem() {
     }
 
     @Synchronized
-    fun setVelocitySetpoint(leftFeetPerSec: Double, rightFeetPerSec: Double, leftFeetPerSecSq: Double, rightFeetPerSecSq: Double) {
+    fun setVelocitySetpoint(
+        leftFeetPerSec: Double,
+        rightFeetPerSec: Double,
+        leftFeetPerSecSq: Double,
+        rightFeetPerSecSq: Double
+    ) {
         if (usesTalonVelocityControl(currentState)) {
             // TODO: change constants
             leftTargetVel = leftFeetPerSec * Constants.Drive.FEET_PER_SEC_TO_NATIVE
             rightTargetVel = rightFeetPerSec * Constants.Drive.FEET_PER_SEC_TO_NATIVE
 
             val leftFeedForward: Double = if (leftFeetPerSec > 0) {
-                Constants.Drive.LEFT_KV_FORWARD_HIGH * leftFeetPerSec + Constants.Drive.LEFT_KA_FORWARD_HIGH * leftFeetPerSecSq + Constants.Drive.LEFT_V_INTERCEPT_FORWARD_HIGH
+                Constants.Drive.LEFT_KV_FORWARD_HIGH * leftFeetPerSec +
+                    Constants.Drive.LEFT_KA_FORWARD_HIGH * leftFeetPerSecSq +
+                    Constants.Drive.LEFT_V_INTERCEPT_FORWARD_HIGH
             } else {
-                Constants.Drive.LEFT_KV_REVERSE_HIGH * leftFeetPerSec + Constants.Drive.LEFT_KA_REVERSE_HIGH * leftFeetPerSecSq + Constants.Drive.LEFT_V_INTERCEPT_REVERSE_HIGH
+                Constants.Drive.LEFT_KV_REVERSE_HIGH * leftFeetPerSec +
+                    Constants.Drive.LEFT_KA_REVERSE_HIGH * leftFeetPerSecSq +
+                    Constants.Drive.LEFT_V_INTERCEPT_REVERSE_HIGH
             }
             val rightFeedForward: Double = if (rightFeetPerSec > 0) {
-                Constants.Drive.RIGHT_KV_FORWARD_HIGH * rightFeetPerSec + Constants.Drive.RIGHT_KA_FORWARD_HIGH * rightFeetPerSecSq + Constants.Drive.RIGHT_V_INTERCEPT_FORWARD_HIGH
+                Constants.Drive.RIGHT_KV_FORWARD_HIGH * rightFeetPerSec +
+                    Constants.Drive.RIGHT_KA_FORWARD_HIGH * rightFeetPerSecSq +
+                    Constants.Drive.RIGHT_V_INTERCEPT_FORWARD_HIGH
             } else {
-                Constants.Drive.RIGHT_KV_REVERSE_HIGH * rightFeetPerSec + Constants.Drive.RIGHT_KA_REVERSE_HIGH * rightFeetPerSecSq + Constants.Drive.RIGHT_V_INTERCEPT_REVERSE_HIGH
+                Constants.Drive.RIGHT_KV_REVERSE_HIGH * rightFeetPerSec +
+                    Constants.Drive.RIGHT_KA_REVERSE_HIGH * rightFeetPerSecSq +
+                    Constants.Drive.RIGHT_V_INTERCEPT_REVERSE_HIGH
             }
 
             leftMasterTalon.set(ControlMode.Velocity, leftTargetVel, DemandType.ArbitraryFeedForward, leftFeedForward)
-            rightMasterTalon.set(ControlMode.Velocity, rightTargetVel, DemandType.ArbitraryFeedForward, rightFeedForward)
+            rightMasterTalon.set(
+                ControlMode.Velocity,
+                rightTargetVel,
+                DemandType.ArbitraryFeedForward,
+                rightFeedForward
+            )
         } else {
             configureTalonsForVelocityControl()
             currentState = DriveControlState.VELOCITY_SETPOINT
@@ -398,14 +454,26 @@ class Drive private constructor() : Subsystem() {
             leftMasterTalon.configNominalOutputReverse(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
             leftMasterTalon.selectProfileSlot(0, Constants.Universal.TIMEOUT)
             leftMasterTalon.configPeakOutputForward(Constants.Drive.AUTO_PEAK_OUTPUT, Constants.Universal.TIMEOUT)
-            leftMasterTalon.configPeakOutputReverse(Constants.Drive.AUTO_PEAK_OUTPUT * -1.0, Constants.Universal.TIMEOUT)
+            leftMasterTalon.configPeakOutputReverse(
+                Constants.Drive.AUTO_PEAK_OUTPUT * -1.0,
+                Constants.Universal.TIMEOUT
+            )
 
             rightMasterTalon.set(ControlMode.Velocity, 0.0) // velocity  output value is in position change / 100ms
-            rightMasterTalon.configNominalOutputForward(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
-            rightMasterTalon.configNominalOutputReverse(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
+            rightMasterTalon.configNominalOutputForward(
+                Constants.Drive.AUTO_NOMINAL_OUTPUT,
+                Constants.Universal.TIMEOUT
+            )
+            rightMasterTalon.configNominalOutputReverse(
+                Constants.Drive.AUTO_NOMINAL_OUTPUT,
+                Constants.Universal.TIMEOUT
+            )
             rightMasterTalon.selectProfileSlot(0, 0)
             rightMasterTalon.configPeakOutputForward(Constants.Drive.AUTO_PEAK_OUTPUT, Constants.Universal.TIMEOUT)
-            rightMasterTalon.configPeakOutputReverse(Constants.Drive.AUTO_PEAK_OUTPUT * -1.0, Constants.Universal.TIMEOUT)
+            rightMasterTalon.configPeakOutputReverse(
+                Constants.Drive.AUTO_PEAK_OUTPUT * -1.0,
+                Constants.Universal.TIMEOUT
+            )
             brakeMode = NeutralMode.Brake
         }
         HelixEvents.getInstance().addEvent("DRIVETRAIN", "Configured Talons for velocity control")
@@ -419,13 +487,25 @@ class Drive private constructor() : Subsystem() {
             leftMasterTalon.configNominalOutputReverse(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
             leftMasterTalon.selectProfileSlot(0, Constants.Universal.TIMEOUT)
             leftMasterTalon.configPeakOutputForward(Constants.Drive.AUTO_PEAK_OUTPUT, Constants.Universal.TIMEOUT)
-            leftMasterTalon.configPeakOutputReverse(Constants.Drive.AUTO_PEAK_OUTPUT * -1.0, Constants.Universal.TIMEOUT)
+            leftMasterTalon.configPeakOutputReverse(
+                Constants.Drive.AUTO_PEAK_OUTPUT * -1.0,
+                Constants.Universal.TIMEOUT
+            )
 
-            rightMasterTalon.configNominalOutputForward(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
-            rightMasterTalon.configNominalOutputReverse(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
+            rightMasterTalon.configNominalOutputForward(
+                Constants.Drive.AUTO_NOMINAL_OUTPUT,
+                Constants.Universal.TIMEOUT
+            )
+            rightMasterTalon.configNominalOutputReverse(
+                Constants.Drive.AUTO_NOMINAL_OUTPUT,
+                Constants.Universal.TIMEOUT
+            )
             rightMasterTalon.selectProfileSlot(0, 0)
             rightMasterTalon.configPeakOutputForward(Constants.Drive.AUTO_PEAK_OUTPUT, Constants.Universal.TIMEOUT)
-            rightMasterTalon.configPeakOutputReverse(Constants.Drive.AUTO_PEAK_OUTPUT * -1.0, Constants.Universal.TIMEOUT)
+            rightMasterTalon.configPeakOutputReverse(
+                Constants.Drive.AUTO_PEAK_OUTPUT * -1.0,
+                Constants.Universal.TIMEOUT
+            )
 
             brakeMode = NeutralMode.Brake
         }
@@ -443,41 +523,46 @@ class Drive private constructor() : Subsystem() {
     }
 
     fun updatePathFollowing() {
-        if (segment < trajLength - 132) {
-            var leftTurn = path.getLeftVelocityIndex(segment)
-            var rightTurn = path.getRightVelocityIndex(segment)
+        var leftTurn = path.getLeftVelocityIndex(segment)
+        var rightTurn = path.getRightVelocityIndex(segment)
 
-            val desiredHeading = Math.toDegrees(path.getHeadingIndex(segment))
-            val angleDifference = boundHalfDegrees(desiredHeading - yaw)
-            val turn: Double = 0.8 * (-1.0 / 80.0) * angleDifference
+        val desiredHeading = Math.toDegrees(path.getHeadingIndex(segment))
+        val angleDifference = boundHalfDegrees(desiredHeading - yaw)
+        val turn: Double = Constants.Autonomous.PATH_FOLLOW_TURN_KP * angleDifference
 
-            val leftDistance: Double = getLeftDistanceInches()
-            val rightDistance: Double = getRightDistanceInches()
+        val leftDistance: Double = getLeftDistanceInches()
+        val rightDistance: Double = getRightDistanceInches()
 
-            val leftErrorDistance: Double = path.getLeftDistanceIndex(segment) - leftDistance
-            val rightErrorDistance: Double = path.getRightDistanceIndex(segment) - rightDistance
+        val leftErrorDistance: Double = path.getLeftDistanceIndex(segment) - leftDistance
+        val rightErrorDistance: Double = path.getRightDistanceIndex(segment) - rightDistance
 
-            val leftVelocityAdjustment = Constants.Gains.LEFT_LOW_KP * leftErrorDistance + Constants.Gains.LEFT_LOW_KD * ((leftErrorDistance - lastLeftError) / path.getDeltaTime())
-            val rightVelocityAdjustment = Constants.Gains.RIGHT_LOW_KP * rightErrorDistance + Constants.Gains.RIGHT_LOW_KD * ((rightErrorDistance - lastRightError) / path.getDeltaTime())
+        val leftVelocityAdjustment =
+            Constants.Gains.LEFT_LOW_KP * leftErrorDistance +
+                Constants.Gains.LEFT_LOW_KD * ((leftErrorDistance - lastLeftError) / path.getDeltaTime())
+        val rightVelocityAdjustment =
+            Constants.Gains.RIGHT_LOW_KP * rightErrorDistance +
+                Constants.Gains.RIGHT_LOW_KD * ((rightErrorDistance - lastRightError) / path.getDeltaTime())
 
-            leftTurn += leftVelocityAdjustment
-            rightTurn += rightVelocityAdjustment
+        leftTurn += leftVelocityAdjustment
+        rightTurn += rightVelocityAdjustment
 
-            lastLeftError = leftErrorDistance
-            lastRightError = rightErrorDistance
+        lastLeftError = leftErrorDistance
+        lastRightError = rightErrorDistance
 
-            leftTurn += turn
-            rightTurn -= turn
+        leftTurn += turn
+        rightTurn -= turn
 
-            setVelocitySetpoint(leftTurn, rightTurn, path.getLeftAccelerationIndex(segment), path.getRightAccelerationIndex(segment))
-            segment++
-        } else {
-            setLeftRightPower(0.0, -0.5)
-        }
+        setVelocitySetpoint(
+            leftTurn,
+            rightTurn,
+            path.getLeftAccelerationIndex(segment),
+            path.getRightAccelerationIndex(segment)
+        )
+        segment++
     }
 
     fun isPathFinished(): Boolean {
-        return segment >= trajLength - 132
+        return segment >= trajLength
     }
 
     private fun nativeToInches(nativeUnits: Int): Double {
@@ -496,8 +581,8 @@ class Drive private constructor() : Subsystem() {
         return inches / (Constants.Drive.WHEEL_DIAMETER_INCHES * Math.PI)
     }
 
-    private fun inchesPerSecondToRpm(inches_per_second: Double): Double {
-        return inchesToRotations(inches_per_second) * 60
+    private fun inchesPerSecondToRpm(inchesPerSecond: Double): Double {
+        return inchesToRotations(inchesPerSecond) * 60
     }
 
     fun getLeftDistanceInches(): Double {

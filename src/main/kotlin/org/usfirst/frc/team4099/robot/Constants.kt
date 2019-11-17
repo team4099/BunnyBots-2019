@@ -1,117 +1,144 @@
 package org.usfirst.frc.team4099.robot
 
+@Suppress("MagicNumber")
 class Constants {
     object Universal {
-        val TIMEOUT = 10
-        val EPSILON = 1E-9
+        const val TIMEOUT = 10
+        const val EPSILON = 1E-9
     }
 
     object Drive {
-        val LEFT_MASTER_ID = 10
-        val LEFT_SLAVE_1_ID = 9
-        // val LEFT_SLAVE_2_ID = 5
-        val RIGHT_MASTER_ID = 5
-        val RIGHT_SLAVE_1_ID = 6
-        // val RIGHT_SLAVE_2_ID = 10
+        const val LEFT_MASTER_ID = 10
+        const val LEFT_SLAVE_1_ID = 9
 
-        val HIGH_GEAR_MAX_SETPOINT = 17.0 // 17 fps
+        const val RIGHT_MASTER_ID = 5
+        const val RIGHT_SLAVE_1_ID = 6
 
-        val MAX_LEFT_OPENLOOP_POWER = 1.0
-        val MAX_RIGHT_OPENLOOP_POWER = 1.0
+        const val STATUS_FRAME_PERIOD_MS = 5
 
-        val SHIFTER_FORWARD_ID = 7
-        val SHIFTER_REVERSE_ID = 0
+        const val VOLTAGE_COMP_LEVEL = 12.0
 
-        val LEFT_KV_FORWARD_HIGH = 0.4993
-        val RIGHT_KV_FORWARD_HIGH = 0.5412
+        const val MAX_LEFT_OPEN_LOOP_POWER = 1.0
+        const val MAX_RIGHT_OPEN_LOOP_POWER = 1.0
 
-        val LEFT_KA_FORWARD_HIGH = 0.0468
-        val RIGHT_KA_FORWARD_HIGH = 0.0601
+        const val LEFT_KV_FORWARD_HIGH = 0.4993
+        const val RIGHT_KV_FORWARD_HIGH = 0.5412
 
-        val LEFT_V_INTERCEPT_FORWARD_HIGH = 0.1879
-        val RIGHT_V_INTERCEPT_FORWARD_HIGH = 0.1364
+        const val LEFT_KA_FORWARD_HIGH = 0.0468
+        const val RIGHT_KA_FORWARD_HIGH = 0.0601
 
-        val LEFT_KV_REVERSE_HIGH = 0.4987
-        val RIGHT_KV_REVERSE_HIGH = 0.5194
+        const val LEFT_V_INTERCEPT_FORWARD_HIGH = 0.1879
+        const val RIGHT_V_INTERCEPT_FORWARD_HIGH = 0.1364
 
-        val LEFT_KA_REVERSE_HIGH = 0.0372
-        val RIGHT_KA_REVERSE_HIGH = 0.0644
+        const val LEFT_KV_REVERSE_HIGH = 0.4987
+        const val RIGHT_KV_REVERSE_HIGH = 0.5194
 
-        val LEFT_V_INTERCEPT_REVERSE_HIGH = -0.1856
-        val RIGHT_V_INTERCEPT_REVERSE_HIGH = -0.2003
+        const val LEFT_KA_REVERSE_HIGH = 0.0372
+        const val RIGHT_KA_REVERSE_HIGH = 0.0644
 
-        val FEET_PER_SEC_TO_NATIVE = 6.8 * 60.0 // 10.4
+        const val LEFT_V_INTERCEPT_REVERSE_HIGH = -0.1856
+        const val RIGHT_V_INTERCEPT_REVERSE_HIGH = -0.2003
 
-        val CLOSED_LOOP_RAMP = 0.0
+        const val FEET_PER_SEC_TO_NATIVE = 6.8 * 60.0 // 10.4
 
-        val PERCENT_DEADBAND = 0.04
+        const val CLOSED_LOOP_RAMP = 0.0
 
-        val CONTINUOUS_CURRENT_LIMIT = 40
+        const val PERCENT_DEADBAND = 0.04
 
-        val AUTO_NOMINAL_OUTPUT = 0.0
-        val AUTO_PEAK_OUTPUT = 0.0
+        const val CONTINUOUS_CURRENT_LIMIT = 40
 
-        val NATIVE_TO_REVS = 12 / 2336
+        const val AUTO_NOMINAL_OUTPUT = 0.0
+        const val AUTO_PEAK_OUTPUT = 0.0
 
-        val WHEEL_DIAMETER_INCHES = 6
-        val WHEEL_TRACK_WIDTH_INCHES = 27
+        const val NATIVE_TO_REVS = 12 / 2336
 
-        val TRACK_SCRUB_FACTOR = 1.1
+        const val WHEEL_DIAMETER_INCHES = 6
+        const val WHEEL_TRACK_WIDTH_INCHES = 27
+        const val WHEEL_GAIN = 0.05
+        const val WHEEL_NON_LINEARITY = 0.05
+
+        const val TRACK_SCRUB_FACTOR = 1.1
+
+        const val GYRO_BAD_VALUE = -31337.0
     }
 
-    object Wheels
-
     object Gains {
-        val LEFT_LOW_KP = 0.0000 // .1 * 1500 / 70
-        val LEFT_LOW_KI = 0.0000
-        val LEFT_LOW_KD = 0.0000
-        val LEFT_LOW_KF = 0.0000 // 1023.0 / 2220.0
+        const val LEFT_LOW_KP = 0.0000 // .1 * 1500 / 70
+        const val LEFT_LOW_KI = 0.0000
+        const val LEFT_LOW_KD = 0.0000
+        const val LEFT_LOW_KF = 0.0000 // 1023.0 / 2220.0
 
         // subject to change
-        val LEFT_HIGH_KP = 0.0000 // .1 * 1023 / 70
-        val LEFT_HIGH_KI = 0.0000
-        val LEFT_HIGH_KD = 0.0000
-        val LEFT_HIGH_KF = 0.0000 // 1023.0 / 4420.0
+        const val LEFT_HIGH_KP = 0.0000 // .1 * 1023 / 70
+        const val LEFT_HIGH_KI = 0.0000
+        const val LEFT_HIGH_KD = 0.0000
+        const val LEFT_HIGH_KF = 0.0000 // 1023.0 / 4420.0
 
-        val RIGHT_LOW_KP = 0.0000 // .1 * 1500 / 70
-        val RIGHT_LOW_KI = 0.0000
-        val RIGHT_LOW_KD = 0.0000
-        val RIGHT_LOW_KF = 0.0000 // 1023.0 / 2220.0
+        const val RIGHT_LOW_KP = 0.0000 // .1 * 1500 / 70
+        const val RIGHT_LOW_KI = 0.0000
+        const val RIGHT_LOW_KD = 0.0000
+        const val RIGHT_LOW_KF = 0.0000 // 1023.0 / 2220.0
 
         // subject to change
-        val RIGHT_HIGH_KP = 0.0000 // .1 * 1023 / 70
-        val RIGHT_HIGH_KI = 0.0000
-        val RIGHT_HIGH_KD = 0.0000
-        val RIGHT_HIGH_KF = 0.0000 // 1023.0 / 4420.0
+        const val RIGHT_HIGH_KP = 0.0000 // .1 * 1023 / 70
+        const val RIGHT_HIGH_KI = 0.0000
+        const val RIGHT_HIGH_KD = 0.0000
+        const val RIGHT_HIGH_KF = 0.0000 // 1023.0 / 4420.0
     }
 
     object Loopers {
-        val LOOPER_DT = 0.02 // 50 Hz
+        const val LOOPER_DT = 0.02 // 50 Hz
     }
 
     object Dashboard {
-        val ALLIANCE_COLOR_KEY = "dashboard/allianceColor"
-        val ALLIANCE_OWNERSHIP_KEY = "dashboard/allianceOwnership"
+        const val ALLIANCE_COLOR_KEY = "dashboard/allianceColor"
+        const val ALLIANCE_OWNERSHIP_KEY = "dashboard/allianceOwnership"
     }
 
     object Autonomous {
-        val AUTO_OPTIONS_DASHBOARD_KEY = "autonomous/autoOptions"
-        val SELECTED_AUTO_MODE_DASHBOARD_KEY = "autonomous/selectedMode"
+        const val AUTO_OPTIONS_DASHBOARD_KEY = "autonomous/autoOptions"
+        const val SELECTED_AUTO_MODE_DASHBOARD_KEY = "autonomous/selectedMode"
 
-        val AUTO_STARTS_DASHBOARD_KEY = "autonomous/autoStarts"
-        val SELECTED_AUTO_START_POS_KEY = "autonomous/selectedStart"
+        const val AUTO_STARTS_DASHBOARD_KEY = "autonomous/autoStarts"
+        const val SELECTED_AUTO_START_POS_KEY = "autonomous/selectedStart"
 
-        val SELECTED_AUTO_START_DELAY_KEY = "autonomous/selectedDelay"
+        const val SELECTED_AUTO_START_DELAY_KEY = "autonomous/selectedDelay"
 
-        val CONNECTION_TIMEOUT_MILLIS = 1000
-        val NUMBER_OF_TRIES = 5
+        const val TURN_POWER = 0.5
+        const val SLOW_TURN_POWER = 0.2
+
+        const val FORWARD_POWER = 1.0
+        const val SLOW_FORWARD_POWER = 0.6
+        const val FORWARD_MAX_TIME_SECONDS = 3
+        const val FORWARD_CORRECTION_KP = 0.01
+        const val FORWARD_GIVE_UP_ANGLE = 30.0
+
+        const val PATH_FOLLOW_TURN_KP = 0.8 * (-1.0 / 80.0)
     }
+
+    object Paths {
+        const val VELOCITY_CSV_INDEX = 4
+        const val DISTANCE_CSV_INDEX = 3
+        const val HEADING_CSV_INDEX = 7
+        const val ACCELERATION_CSV_INDEX = 5
+    }
+
     object Joysticks {
-        val DRIVER_PORT = 0
-        val SHOTGUN_PORT = 1
+        const val DRIVER_PORT = 0
+        const val SHOTGUN_PORT = 1
+
+        const val QUICK_TURN_THROTTLE_TOLERANCE = 0.1
+        const val THROTTLE_DEADBAND = 0.04
+        const val TURN_DEADBAND = 0.035
     }
 
     object Intake {
-        val INTAKE_TALON = 2
+        const val TALON_ID = 2
+        const val CURRENT_LIMIT = 20
+    }
+
+    object BrownoutDefender {
+        const val COMPRESSOR_STOP_VOLTAGE = 10
+        const val COMPRESSOR_STOP_CURRENT = 70
     }
 }

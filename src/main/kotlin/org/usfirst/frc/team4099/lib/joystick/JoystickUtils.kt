@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4099.lib.joystick
 
+@Suppress("MagicNumber")
 object JoystickUtils {
 
     /**
@@ -31,6 +32,10 @@ object JoystickUtils {
         val sign = if (mSignal > 0) 1 else -1
         mSignal = Math.abs(mSignal)
 
-        return if (mSignal < deadbandWidth) 0.0 else MAX_OUTPUT * sign.toDouble() * (mSignal - deadbandWidth) / (1.0 - deadbandWidth)
+        return if (mSignal < deadbandWidth) {
+            0.0
+        } else {
+            MAX_OUTPUT * sign.toDouble() * (mSignal - deadbandWidth) / (1.0 - deadbandWidth)
+        }
     }
 }

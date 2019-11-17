@@ -61,5 +61,6 @@ object DashboardConfigurator {
     }
 
     fun initDashboard() {
+        TODO("add stuff here to get rid of this suppress")
     }
 }

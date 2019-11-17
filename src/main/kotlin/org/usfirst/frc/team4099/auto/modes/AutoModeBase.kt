@@ -3,7 +3,7 @@ package org.usfirst.frc.team4099.auto.modes
 import org.usfirst.frc.team4099.auto.AutoModeEndedException
 import org.usfirst.frc.team4099.auto.actions.Action
 abstract class AutoModeBase {
-    protected var m_update_rate = 1.0 / 50.0
+    protected var updateRate = 1.0 / 50.0
     var isActive = false
         protected set
 
@@ -23,7 +23,7 @@ abstract class AutoModeBase {
         println("Auto mode done")
     }
 
-    fun done() {}
+    abstract fun done()
 
     fun stop() {
         isActive = false
@@ -44,7 +44,7 @@ abstract class AutoModeBase {
         action.start()
         while (isActiveWithThrow && !action.isFinished()) {
             action.update()
-            val waitTime = (m_update_rate * 1000.0).toLong()
+            val waitTime = (updateRate * 1000.0).toLong()
             try {
                 Thread.sleep(waitTime)
             } catch (e: InterruptedException) {

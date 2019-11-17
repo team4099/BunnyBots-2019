@@ -1,6 +1,10 @@
 package org.usfirst.frc.team4099.lib.util
 
+import org.usfirst.frc.team4099.robot.Constants
 import java.text.DecimalFormat
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * A rotation in a 2d coordinate frame represented a point on the unit circle
@@ -10,20 +14,20 @@ import java.text.DecimalFormat
  */
 class Rotation2D : Interpolable<Rotation2D> {
 
-    protected var cos_angle_: Double = 0.toDouble()
-    protected var sin_angle_: Double = 0.toDouble()
+    protected var cosAngle: Double = 0.toDouble()
+    protected var sinAngle: Double = 0.toDouble()
 
     @JvmOverloads constructor(x: Double = 1.0, y: Double = 0.0, normalize: Boolean = false) {
-        cos_angle_ = x
-        sin_angle_ = y
+        cosAngle = x
+        sinAngle = y
         if (normalize) {
             normalize()
         }
     }
 
     constructor(other: Rotation2D) {
-        cos_angle_ = other.cos_angle_
-        sin_angle_ = other.sin_angle_
+        cosAngle = other.cosAngle
+        sinAngle = other.sinAngle
     }
 
     /**
@@ -32,36 +36,36 @@ class Rotation2D : Interpolable<Rotation2D> {
      * re-scale the sin and cos to reset rounding errors.
      */
     fun normalize() {
-        val magnitude = Math.hypot(cos_angle_, sin_angle_)
-        if (magnitude > kEpsilon) {
-            sin_angle_ /= magnitude
-            cos_angle_ /= magnitude
+        val magnitude = Math.hypot(cosAngle, sinAngle)
+        if (magnitude > Constants.Universal.EPSILON) {
+            sinAngle /= magnitude
+            cosAngle /= magnitude
         } else {
-            sin_angle_ = 0.0
-            cos_angle_ = 1.0
+            sinAngle = 0.0
+            cosAngle = 1.0
         }
     }
 
     fun cos(): Double {
-        return cos_angle_
+        return cosAngle
     }
 
     fun sin(): Double {
-        return sin_angle_
+        return sinAngle
     }
 
     fun tan(): Double {
-        return if (cos_angle_ < kEpsilon) {
-            if (sin_angle_ >= 0.0) {
+        return if (cosAngle < Constants.Universal.EPSILON) {
+            if (sinAngle >= 0.0) {
                 java.lang.Double.POSITIVE_INFINITY
             } else {
                 java.lang.Double.NEGATIVE_INFINITY
             }
-        } else sin_angle_ / cos_angle_
+        } else sinAngle / cosAngle
     }
 
     val radians: Double
-        get() = Math.atan2(sin_angle_, cos_angle_)
+        get() = atan2(sinAngle, cosAngle)
 
     val degrees: Double
         get() = Math.toDegrees(radians)
@@ -76,8 +80,8 @@ class Rotation2D : Interpolable<Rotation2D> {
      * @return This rotation rotated by other.
      */
     fun rotateBy(other: Rotation2D): Rotation2D {
-        return Rotation2D(cos_angle_ * other.cos_angle_ - sin_angle_ * other.sin_angle_,
-                cos_angle_ * other.sin_angle_ + sin_angle_ * other.cos_angle_, true)
+        return Rotation2D(cosAngle * other.cosAngle - sinAngle * other.sinAngle,
+                cosAngle * other.sinAngle + sinAngle * other.cosAngle, true)
     }
 
     /**
@@ -86,7 +90,7 @@ class Rotation2D : Interpolable<Rotation2D> {
      * @return The opposite of this rotation.
      */
     fun inverse(): Rotation2D {
-        return Rotation2D(cos_angle_, -sin_angle_, false)
+        return Rotation2D(cosAngle, -sinAngle, false)
     }
 
     override fun interpolate(other: Rotation2D, x: Double): Rotation2D {
@@ -95,8 +99,8 @@ class Rotation2D : Interpolable<Rotation2D> {
         } else if (x >= 1) {
             return Rotation2D(other)
         }
-        val angle_diff = inverse().rotateBy(other).radians
-        return this.rotateBy(fromRadians(angle_diff * x))
+        val angleDiff = inverse().rotateBy(other).radians
+        return this.rotateBy(fromRadians(angleDiff * x))
     }
 
     override fun toString(): String {
@@ -105,17 +109,15 @@ class Rotation2D : Interpolable<Rotation2D> {
     }
 
     companion object {
-        protected val kEpsilon = 1E-9
-
         var FORWARDS = fromDegrees(0.0)
         var BACKWARDS = fromDegrees(179.9)
 
-        fun fromRadians(angle_radians: Double): Rotation2D {
-            return Rotation2D(Math.cos(angle_radians), Math.sin(angle_radians), false)
+        fun fromRadians(angleRadians: Double): Rotation2D {
+            return Rotation2D(cos(angleRadians), sin(angleRadians), false)
         }
 
-        fun fromDegrees(angle_degrees: Double): Rotation2D {
-            return fromRadians(Math.toRadians(angle_degrees))
+        fun fromDegrees(angleDegrees: Double): Rotation2D {
+            return fromRadians(Math.toRadians(angleDegrees))
         }
     }
 }
