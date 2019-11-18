@@ -25,7 +25,7 @@ object CrashTracker {
     }
 
     private fun logMarker(mark: String, exception: Throwable?) {
-        HelixEvents.getInstance().addEvent("CRASH", mark)
+        HelixEvents.addEvent("CRASH", mark)
         try {
             FileWriter(
                     "/home/lvuser/crash_tracking.txt",

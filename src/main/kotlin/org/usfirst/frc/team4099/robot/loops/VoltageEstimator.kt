@@ -14,7 +14,7 @@ class VoltageEstimator : Loop {
     private val weight = 15.0
 
     init {
-        HelixLogger.getInstance().addDoubleSource("VoltageEstimator Avg. Disabled Voltage") { averageVoltage }
+        HelixLogger.addSource("VoltageEstimator Avg. Disabled Voltage") { averageVoltage }
     }
 
     override fun onStart(timestamp: Double) {

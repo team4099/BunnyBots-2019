@@ -49,13 +49,13 @@ class Drive private constructor() : Subsystem() {
     var yaw: Double = 0.0
         get() {
             if (ahrs.isConnected) field = ahrs.yaw.toDouble()
-            else HelixEvents.getInstance().addEvent("DRIVETRAIN", "Gyroscope queried but not connected")
+            else HelixEvents.addEvent("DRIVETRAIN", "Gyroscope queried but not connected")
             return field
         }
     var angle: Double = 0.0
         get() {
             if (ahrs.isConnected) field = ahrs.angle.toDouble()
-            else HelixEvents.getInstance().addEvent("DRIVETRAIN", "Gyroscope queried but not connected")
+            else HelixEvents.addEvent("DRIVETRAIN", "Gyroscope queried but not connected")
             return field
         }
 
@@ -221,8 +221,7 @@ class Drive private constructor() : Subsystem() {
                         // updateTurnToHeading(timestamp)
                     }
                     else -> {
-                        HelixEvents.getInstance()
-                            .addEvent("DRIVETRAIN", "Unexpected drive control state: $currentState")
+                        HelixEvents.addEvent("DRIVETRAIN", "Unexpected drive control state: $currentState")
                     }
                 }
             }
@@ -232,25 +231,25 @@ class Drive private constructor() : Subsystem() {
     }
 
     private fun registerLogging() {
-        HelixLogger.getInstance().addDoubleSource("DT Left Output %") { leftMasterTalon.motorOutputPercent }
-        HelixLogger.getInstance().addDoubleSource("DT Right Output %") { rightMasterTalon.motorOutputPercent }
+        HelixLogger.addSource("DT Left Output %") { leftMasterTalon.motorOutputPercent }
+        HelixLogger.addSource("DT Right Output %") { rightMasterTalon.motorOutputPercent }
 
-        HelixLogger.getInstance().addDoubleSource("DT Left Master Input Current") { leftMasterTalon.outputCurrent }
-        HelixLogger.getInstance().addDoubleSource("DT Left Slave Input Current") { leftSlaveTalon.outputCurrent }
-        HelixLogger.getInstance().addDoubleSource("DT Right Master Input Current") { rightMasterTalon.outputCurrent }
-        HelixLogger.getInstance().addDoubleSource("DT Right Slave Input Current") { rightSlaveTalon.outputCurrent }
+        HelixLogger.addSource("DT Left Master Input Current") { leftMasterTalon.outputCurrent }
+        HelixLogger.addSource("DT Left Slave Input Current") { leftSlaveTalon.outputCurrent }
+        HelixLogger.addSource("DT Right Master Input Current") { rightMasterTalon.outputCurrent }
+        HelixLogger.addSource("DT Right Slave Input Current") { rightSlaveTalon.outputCurrent }
 
-        HelixLogger.getInstance().addDoubleSource("DT Left Velocity (in/s)") { getLeftVelocityInchesPerSec() }
-        HelixLogger.getInstance().addDoubleSource("DT Right Velocity (in/s)") { getRightVelocityInchesPerSec() }
-        HelixLogger.getInstance().addDoubleSource("DT Left Target Velocity (in/s)") { leftTargetVel }
-        HelixLogger.getInstance().addDoubleSource("DT Left Target Velocity (in/s)") { rightTargetVel }
+        HelixLogger.addSource("DT Left Velocity (in/s)") { getLeftVelocityInchesPerSec() }
+        HelixLogger.addSource("DT Right Velocity (in/s)") { getRightVelocityInchesPerSec() }
+        HelixLogger.addSource("DT Left Target Velocity (in/s)") { leftTargetVel }
+        HelixLogger.addSource("DT Left Target Velocity (in/s)") { rightTargetVel }
 
-        HelixLogger.getInstance().addDoubleSource("DT Left Position (in)") { getLeftDistanceInches() }
-        HelixLogger.getInstance().addDoubleSource("DT Right Position (in)") { getRightDistanceInches() }
+        HelixLogger.addSource("DT Left Position (in)") { getLeftDistanceInches() }
+        HelixLogger.addSource("DT Right Position (in)") { getRightDistanceInches() }
 
-        HelixLogger.getInstance().addDoubleSource("DT Gyro Angle") { angle }
+        HelixLogger.addSource("DT Gyro Angle") { angle }
 
-        HelixLogger.getInstance().addIntegerSource("DT Pathfollow Segment") { segment }
+        HelixLogger.addSource("DT Pathfollow Segment") { segment }
     }
 
     override fun outputToSmartDashboard() {
@@ -267,7 +266,7 @@ class Drive private constructor() : Subsystem() {
                 ahrs.reset()
             }
         } else {
-            HelixEvents.getInstance().addEvent("DRIVETRAIN", "Gyroscope queried but not connected")
+            HelixEvents.addEvent("DRIVETRAIN", "Gyroscope queried but not connected")
         }
         resetEncoders()
     }
@@ -279,7 +278,7 @@ class Drive private constructor() : Subsystem() {
             rightMasterTalon.configNominalOutputForward(0.0, Constants.Universal.TIMEOUT)
             currentState = DriveControlState.OPEN_LOOP
             brakeMode = NeutralMode.Coast
-            HelixEvents.getInstance().addEvent("DRIVETRAIN", "Entered open loop control")
+            HelixEvents.addEvent("DRIVETRAIN", "Entered open loop control")
         }
         setLeftRightPower(
             signal.leftMotor * Constants.Drive.MAX_LEFT_OPEN_LOOP_POWER,
@@ -476,7 +475,7 @@ class Drive private constructor() : Subsystem() {
             )
             brakeMode = NeutralMode.Brake
         }
-        HelixEvents.getInstance().addEvent("DRIVETRAIN", "Configured Talons for velocity control")
+        HelixEvents.addEvent("DRIVETRAIN", "Configured Talons for velocity control")
     }
 
     @Synchronized
@@ -509,7 +508,7 @@ class Drive private constructor() : Subsystem() {
 
             brakeMode = NeutralMode.Brake
         }
-        HelixEvents.getInstance().addEvent("DRIVETRAIN", "Configured Talons for position control")
+        HelixEvents.addEvent("DRIVETRAIN", "Configured Talons for position control")
     }
 
     fun enablePathFollow(pathInput: Path) {
@@ -519,7 +518,7 @@ class Drive private constructor() : Subsystem() {
         segment = 0
         trajLength = path.getTrajLength()
         currentState = DriveControlState.PATH_FOLLOWING
-        HelixEvents.getInstance().addEvent("DRIVETRAIN", "Path following")
+        HelixEvents.addEvent("DRIVETRAIN", "Path following")
     }
 
     fun updatePathFollowing() {

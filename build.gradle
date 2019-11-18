@@ -78,7 +78,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib"
 
     // HelixLogger and HelixEvents
-    compile 'com.github.team4099:HelixUtilities:master-SNAPSHOT'
+    compile 'com.github.team4099:HelixUtilities:e87eb17476'
     detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:1.1.1"
 }
 

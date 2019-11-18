@@ -24,16 +24,16 @@ class Robot : TimedRobot() {
     private val enabledLooper = Looper("enabledLooper")
 
     init {
-        HelixEvents.getInstance().addEvent("ROBOT", "Robot Construction")
-        HelixLogger.getInstance().addDoubleSource("Battery Voltage", RobotController::getBatteryVoltage)
+        HelixEvents.addEvent("ROBOT", "Robot Construction")
+        HelixLogger.addSource("Battery Voltage", RobotController::getBatteryVoltage)
 
-        HelixLogger.getInstance().addDoubleSource("Enabled Looper dT") { enabledLooper.dt }
-        HelixLogger.getInstance().addDoubleSource("Disabled Looper dT") { disabledLooper.dt }
+        HelixLogger.addSource("Enabled Looper dT") { enabledLooper.dt }
+        HelixLogger.addSource("Disabled Looper dT") { disabledLooper.dt }
     }
 
     override fun robotInit() {
         try {
-            HelixEvents.getInstance().startLogging()
+            HelixEvents.startLogging()
             CameraServer.getInstance().startAutomaticCapture()
 
             DashboardConfigurator.initDashboard()
@@ -48,7 +48,7 @@ class Robot : TimedRobot() {
             disabledLooper.register(VoltageEstimator.instance)
             enabledLooper.register(FaultDetector)
 
-            HelixEvents.getInstance().addEvent("ROBOT", "Robot Initialized")
+            HelixEvents.addEvent("ROBOT", "Robot Initialized")
         } catch (t: Throwable) {
             CrashTracker.logThrowableCrash("robotInit", t)
             throw t
@@ -60,7 +60,7 @@ class Robot : TimedRobot() {
             enabledLooper.stop() // end EnabledLooper
             disabledLooper.start() // start DisabledLooper
 
-            HelixEvents.getInstance().addEvent("ROBOT", "Robot Disabled")
+            HelixEvents.addEvent("ROBOT", "Robot Disabled")
         } catch (t: Throwable) {
             CrashTracker.logThrowableCrash("disabledInit", t)
             throw t
@@ -70,7 +70,7 @@ class Robot : TimedRobot() {
     override fun autonomousInit() {
         try {
             autoModeExecutor = AutoModeExecutor()
-            HelixEvents.getInstance().addEvent("ROBOT", "Autonomous Enabled")
+            HelixEvents.addEvent("ROBOT", "Autonomous Enabled")
         } catch (t: Throwable) {
             CrashTracker.logThrowableCrash("autonomousInit", t)
             throw t
@@ -80,7 +80,7 @@ class Robot : TimedRobot() {
     override fun teleopInit() {
         try {
             enabledLooper.start()
-            HelixEvents.getInstance().addEvent("ROBOT", "Teleop Enabled")
+            HelixEvents.addEvent("ROBOT", "Teleop Enabled")
         } catch (t: Throwable) {
             CrashTracker.logThrowableCrash("teleopInit", t)
             throw t
@@ -89,12 +89,7 @@ class Robot : TimedRobot() {
 
     override fun disabledPeriodic() {
         try {
-            // SmartDashboard.putNumber("Dashboard Test", dashBoardTest * 1.0)
-//            dashBoardTest++
-//            led.setNumber(3)
-
             // outputAllToSmartDashboard()
-//            wrist.outputToSmartDashboard()
         } catch (t: Throwable) {
             CrashTracker.logThrowableCrash("disabledPeriodic", t)
             throw t

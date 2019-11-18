@@ -41,7 +41,7 @@ object SubsystemManager {
 
     fun outputTelemetry() {
         subsystems.forEach { it.outputToSmartDashboard() }
-        HelixLogger.getInstance().saveLogs()
+        HelixLogger.saveLogs()
     }
 
     fun checkSubsystems() {
