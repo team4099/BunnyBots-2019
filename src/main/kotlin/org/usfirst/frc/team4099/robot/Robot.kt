@@ -14,6 +14,7 @@ import org.usfirst.frc.team4099.robot.loops.FaultDetector
 import org.usfirst.frc.team4099.robot.loops.Looper
 import org.usfirst.frc.team4099.robot.loops.VoltageEstimator
 import org.usfirst.frc.team4099.robot.subsystems.Drive
+import org.usfirst.frc.team4099.robot.subsystems.Vision
 
 class Robot : TimedRobot() {
     private lateinit var autoModeExecutor: AutoModeExecutor
@@ -38,7 +39,8 @@ class Robot : TimedRobot() {
 
             DashboardConfigurator.initDashboard()
 
-            SubsystemManager.register(listOf(drive))
+            SubsystemManager.register(drive)
+            SubsystemManager.register(Vision)
 
             enabledLooper.register(SubsystemManager.enabledLoop)
             enabledLooper.register(BrownoutDefender.instance)
