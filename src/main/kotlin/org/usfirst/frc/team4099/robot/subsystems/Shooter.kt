@@ -9,7 +9,7 @@ import org.usfirst.frc.team4099.lib.util.CANMotorControllerFactory
 import org.usfirst.frc.team4099.robot.Constants
 import org.usfirst.frc.team4099.robot.loops.Loop
 
-object ShootyShooter : Subsystem() {
+object Shooter : Subsystem() {
     enum class ShooterState {
         SHOOTING,
         REVERSING,
