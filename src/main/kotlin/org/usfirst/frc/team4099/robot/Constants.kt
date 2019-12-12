@@ -138,7 +138,7 @@ class Constants {
     }
 
     object Shooter {
-        const val LEFT_FLYWHEEL_ID = 0 //TODO: change all of these
+        const val LEFT_FLYWHEEL_ID = 0 // TODO: change all of these
         const val RIGHT_FLYWHEEL_ID = 0
         const val ACCELERATOR_ID = 0
 
