@@ -136,18 +136,36 @@ class Constants {
         const val TALON_ID = 2
         const val CURRENT_LIMIT = 20
     }
-    object Vision {
-        const val DRIVER_PIPELINE_ID = 1
-        const val TARGETING_PIPELINE_ID = 0
-        const val TARGET_HEIGHT = 77.25
-        const val CAMERA_HEIGHT = 0
-        const val CAMERA_ANGLE = 0
+    <<<<<<< Updated upstream
+
+    object Shooter {
+        const val LEFT_FLYWHEEL_ID = 0 //TODO: change all of these
+        const val RIGHT_FLYWHEEL_ID = 0
+        const val ACCELERATOR_ID = 0
+
+        const val FEEDER_ID = 0
+
+        // TODO: Gotta change these
+        const val FLYWHEEL_P_GAIN = 0.0
+        const val FLYWHEEL_I_GAIN = 0.0
+        const val FLYWHEEL_D_GAIN = 0.0
+        const val FLYWHEEL_F_GAIN = 0.0
+
+        const val TARGET_FLYWHEEL_SPEED = 2941.2 // accurate enough?
+
+        object Vision {
+            const val DRIVER_PIPELINE_ID = 1
+            const val TARGETING_PIPELINE_ID = 0
+            const val TARGET_HEIGHT = 77.25
+            const val CAMERA_HEIGHT = 0
+            const val CAMERA_ANGLE = 0
+            const val SHOOTING_DISTANCE = 0
+            const val AIMING_KP = 0
+            const val ALIGNING_KP = 0
+        }
+
+        object BrownoutDefender {
+            const val COMPRESSOR_STOP_VOLTAGE = 10
+            const val COMPRESSOR_STOP_CURRENT = 70
+        }
     }
-
-    object BrownoutDefender {
-        const val COMPRESSOR_STOP_VOLTAGE = 10
-        const val COMPRESSOR_STOP_CURRENT = 70
-    }
-
-
-}
