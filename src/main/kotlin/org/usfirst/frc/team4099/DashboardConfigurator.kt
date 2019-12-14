@@ -12,11 +12,9 @@ import org.usfirst.frc.team4099.auto.modes.StandStillMode
  */
 object DashboardConfigurator {
     fun getAutonomousMode(): AutoModeBase {
-        var selectedAutoMode: AutoModeBase
-        selectedAutoMode = when (SmartDashboard.getString("/SmartDashboard/autonomous/selectedAutoMode", "empty")) {
+        return when (SmartDashboard.getString("/SmartDashboard/autonomous/selectedAutoMode", "empty")) {
             else -> StandStillMode()
         }
-        return selectedAutoMode
     }
 
     fun getStartingPosition(): StartingPosition {

@@ -22,6 +22,7 @@ class Robot : TimedRobot() {
     private val controlBoard = ControlBoard.instance
     private val disabledLooper = Looper("disabledLooper")
     private val enabledLooper = Looper("enabledLooper")
+    private var autoStartTime = 0.0
 
     init {
         HelixEvents.addEvent("ROBOT", "Robot Construction")
@@ -73,6 +74,7 @@ class Robot : TimedRobot() {
         try {
 //            autoModeExecutor = AutoModeExecutor()
             HelixEvents.addEvent("ROBOT", "Autonomous Enabled")
+            autoStartTime = System.currentTimeMillis().toDouble()
         } catch (t: Throwable) {
             CrashTracker.logThrowableCrash("autonomousInit", t)
             throw t
@@ -99,7 +101,11 @@ class Robot : TimedRobot() {
     }
 
     override fun autonomousPeriodic() {
-        teleopPeriodic()
+        if (System.currentTimeMillis().toDouble() - autoStartTime < 3000){
+            drive.setLeftRightPower(1.0,1.0)
+        } else{
+            drive.setLeftRightPower(0.0,0.0)
+        }
     }
 
     override fun teleopPeriodic() {

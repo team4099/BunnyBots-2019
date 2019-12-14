@@ -79,7 +79,13 @@ dependencies {
 
     // HelixLogger and HelixEvents
     compile 'com.github.team4099:HelixUtilities:e87eb17476'
-//    detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:1.1.1"
+
+    detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:1.1.1"
+
+    compile "org.ejml:ejml-simple:0.38"
+    compile "com.fasterxml.jackson.core:jackson-annotations:2.10.0"
+    compile "com.fasterxml.jackson.core:jackson-core:2.10.0"
+    compile "com.fasterxml.jackson.core:jackson-databind:2.10.0"
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
