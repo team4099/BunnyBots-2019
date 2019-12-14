@@ -1,6 +1,5 @@
 package org.usfirst.frc.team4099.robot
 
-@Suppress("MagicNumber")
 class Constants {
     object Universal {
         const val TIMEOUT = 10
@@ -136,7 +135,6 @@ class Constants {
         const val TALON_ID = 2
         const val CURRENT_LIMIT = 20
     }
-    <<<<<<< Updated upstream
 
     object Shooter {
         const val LEFT_FLYWHEEL_ID = 0 //TODO: change all of these
@@ -152,20 +150,20 @@ class Constants {
         const val FLYWHEEL_F_GAIN = 0.0
 
         const val TARGET_FLYWHEEL_SPEED = 2941.2 // accurate enough?
-
-        object Vision {
-            const val DRIVER_PIPELINE_ID = 1
-            const val TARGETING_PIPELINE_ID = 0
-            const val TARGET_HEIGHT = 77.25
-            const val CAMERA_HEIGHT = 0
-            const val CAMERA_ANGLE = 0
-            const val SHOOTING_DISTANCE = 0
-            const val AIMING_KP = 0
-            const val ALIGNING_KP = 0
-        }
-
-        object BrownoutDefender {
-            const val COMPRESSOR_STOP_VOLTAGE = 10
-            const val COMPRESSOR_STOP_CURRENT = 70
-        }
     }
+    object Vision {
+        const val DRIVER_PIPELINE_ID = 1
+        const val TARGETING_PIPELINE_ID = 0
+        const val TARGET_HEIGHT = 77.25
+        const val CAMERA_HEIGHT = 0
+        const val CAMERA_ANGLE = 0
+        const val SHOOTING_DISTANCE = 0
+        const val AIMING_KP = 0
+        const val ALIGNING_KP = 0
+    }
+
+    object BrownoutDefender {
+        const val COMPRESSOR_STOP_VOLTAGE = 10
+        const val COMPRESSOR_STOP_CURRENT = 70
+    }
+}

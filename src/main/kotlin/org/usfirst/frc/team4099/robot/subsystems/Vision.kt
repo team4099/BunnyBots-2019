@@ -15,8 +15,7 @@ object Vision : Subsystem() {
     var distance = 0.0
 
     // Data values from the camera reflections of the lime light?
-    private val table: NetworkTable = NetworkTableInstance.getDefault().getTable
-    ("limelight")
+    private val table: NetworkTable = NetworkTableInstance.getDefault().getTable("limelight")
     var tx = table.getEntry("tx").getDouble(0.0)
     var tv = table.getEntry("tv").getDouble(0.0) // is this a valid target?
     var ty = table.getEntry("ty").getDouble(0.0)
@@ -29,7 +28,7 @@ object Vision : Subsystem() {
         AIMING, INACTIVE, ALIGNING
     }
 
-    override val loop: Loop = object: Loop {
+    override val loop: Loop = object : Loop {
         override fun onStart(timestamp: Double) {
             state = VisionState.INACTIVE
         }
@@ -40,27 +39,26 @@ object Vision : Subsystem() {
                 tv = table.getEntry("tv").getDouble(0.0)
                 ty = table.getEntry("ty").getDouble(0.0)
                 ta = table.getEntry("ta").getDouble(0.0)
-                distance = (Constants.Vision.TARGET_HEIGHT -
-                        Constants.Vision.CAMERA_HEIGHT) / tan(Constants.Vision.CAMERA_ANGLE + ty)
-
+                distance = (Constants.Vision.TARGET_HEIGHT - Constants.Vision.CAMERA_HEIGHT) / tan(Constants.Vision.CAMERA_ANGLE + ty)
                 when (state) {
-                    VisionState.AIMING ->{
+                    VisionState.AIMING -> {
                         pipeline.setNumber(0)
-                        if (tv != 0.0) {
+                        if (tv == 0.0){
+                        } else {
                             steeringAdjust = tx * Constants.Vision.AIMING_KP
                             //steeringAdjust += minCommand * sign(steeringAdjust)
                         }
                     }
-                    VisionState.INACTIVE->{
+                    VisionState.INACTIVE -> {
                         pipeline.setNumber(1)
-                        steeringAdjust = 0
-                        distanceAdjust = 0
+                        steeringAdjust = 0.0
+                        distanceAdjust = 0.0
                     }
-                    VisionState.ALIGNING->{//seeking
+                    VisionState.ALIGNING -> {
                         pipeline.setNumber(0)
-                        if (tv != 0.0) {
-                            distanceAdjust = (Constants.Vision.SHOOTING_DISTANCE -
-                                    distance) * Constants.Vision.ALIGNING_KP
+                        if (tv == 0.0){
+                        } else {
+                            distanceAdjust = (Constants.Vision.SHOOTING_DISTANCE - distance) * Constants.Vision.ALIGNING_KP
                             //distanceAdjust += minCommand * sign(distanceAdjust)
                         }
                     }
@@ -81,11 +79,7 @@ object Vision : Subsystem() {
     }
 
     override fun stop() {
-        state = VisionState.INACTIVE // we want to stop this and to do that we need to
-        set state to inactive
-                pipeline.setNumber(Constants.Vision.DRIVER_PIPELINE_ID) // sets the pipeline ID
-
-
+        state = VisionState.INACTIVE // we want to stop this and to do that we need to set state to inactive
+        pipeline.setNumber(Constants.Vision.DRIVER_PIPELINE_ID) // sets the pipeline ID
     }
-
 }
