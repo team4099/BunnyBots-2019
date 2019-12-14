@@ -137,6 +137,22 @@ class Constants {
         const val CURRENT_LIMIT = 20
     }
 
+    object Shooter {
+        const val LEFT_FLYWHEEL_ID = 0 // TODO: change all of these
+        const val RIGHT_FLYWHEEL_ID = 0
+        const val ACCELERATOR_ID = 0
+
+        const val FEEDER_ID = 0
+
+        // TODO: Gotta change these
+        const val FLYWHEEL_P_GAIN = 0.0
+        const val FLYWHEEL_I_GAIN = 0.0
+        const val FLYWHEEL_D_GAIN = 0.0
+        const val FLYWHEEL_F_GAIN = 0.0
+
+        const val TARGET_FLYWHEEL_SPEED = 2941.2 // accurate enough?
+    }
+
     object BrownoutDefender {
         const val COMPRESSOR_STOP_VOLTAGE = 10
         const val COMPRESSOR_STOP_CURRENT = 70
