@@ -7,14 +7,13 @@ import org.usfirst.frc.team4099.robot.Constants
 import org.usfirst.frc.team4099.robot.loops.Loop
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 
-object Intake private constructor() : Subsystem {
-    private val talon = TalonSRX(Constants.Intake.INTAKE_TALON_ID)
+object Intake : Subsystem() {
+    private val talon = TalonSRX(Constants.Intake.TALON_ID)
 
-    var intakeState = IntakeState.IN
-    private var intakePower = 0.0
+    var intakeState = IntakeState.IDLE
 
     enum class IntakeState {
-        IN, STOP, OUT
+        IN, IDLE, OUT
     }
 
     override fun outputToSmartDashboard() {
@@ -33,29 +32,27 @@ object Intake private constructor() : Subsystem {
         talon.set(ControlMode.PercentOutput, power)
     }
 
-    val loop: Loop = object : Loop {
-        override fun onStart() {
-            intakeState = IntakeState.STOP
+    override val loop = object : Loop {
+        override fun onStart(timestamp: Double) {
+            intakeState = IntakeState.IDLE
         }
 
         /**
          * Sets Intake to -1 if pulling in, to 0 if stationary, and 1 if pushing out
          */
-        override fun onLoop() {
+        override fun onLoop(timestamp: Double) {
             synchronized(this@Intake) {
                 when (intakeState) {
                     IntakeState.IN -> setIntakePower(-1.0)
-                    IntakeState.STOP -> setIntakePower(0.0)
+                    IntakeState.IDLE -> setIntakePower(0.0)
                     IntakeState.OUT -> setIntakePower(1.0)
                 }
-
-                override fun onStop() = stop()
-
             }
         }
+        override fun onStop(timestamp: Double) = stop()
     }
     override fun stop() {
-        intakeState = IntakeState.STOP
+        intakeState = IntakeState.IDLE
         setIntakePower(0.0)
     }
 
