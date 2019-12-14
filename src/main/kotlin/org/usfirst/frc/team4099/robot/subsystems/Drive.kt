@@ -7,6 +7,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod
 import com.kauailabs.navx.frc.AHRS
+import com.revrobotics.CANSparkMax
+import com.revrobotics.CANSparkMaxLowLevel
 import com.team2363.logger.HelixEvents
 import com.team2363.logger.HelixLogger
 import edu.wpi.first.wpilibj.SPI
@@ -14,7 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.usfirst.frc.team4099.auto.paths.FieldPaths
 import org.usfirst.frc.team4099.auto.paths.Path
 import org.usfirst.frc.team4099.lib.drive.DriveSignal
-import org.usfirst.frc.team4099.lib.util.CANMotorControllerFactory
 import org.usfirst.frc.team4099.lib.util.Utils
 import org.usfirst.frc.team4099.robot.Constants
 import org.usfirst.frc.team4099.robot.loops.Loop
@@ -24,17 +25,20 @@ import kotlin.math.max
 import kotlin.math.sin
 
 class Drive private constructor() : Subsystem() {
-    private val rightMasterTalon = CANMotorControllerFactory.createDefaultTalon(Constants.Drive.RIGHT_MASTER_ID)
-    private val rightSlaveTalon = CANMotorControllerFactory.createPermanentSlaveTalon(
-        Constants.Drive.RIGHT_SLAVE_1_ID,
-        Constants.Drive.RIGHT_MASTER_ID
-    )
+    private val rightMasterSpark = CANSparkMax(Constants.Drive.RIGHT_MASTER_ID, CANSparkMaxLowLevel.MotorType.kBrushless)// CANMotorControllerFactory.createDefaultTalon(Constants.Drive.RIGHT_MASTER_ID)
+//    private val rightSlaveSpark = CANSparkMax(Constants.Drive.RIGHT_SLAVE_1_ID, CANSparkMaxLowLevel.MotorType.kBrushless)// CANMotorControllerFactory.createPermanentSlaveTalon(
+        //Constants.Drive.RIGHT_SLAVE_1_ID,
+        //Constants.Drive.RIGHT_MASTER_ID
+    //)
 
-    private val leftMasterTalon = CANMotorControllerFactory.createDefaultTalon(Constants.Drive.LEFT_MASTER_ID)
-    private val leftSlaveTalon = CANMotorControllerFactory.createPermanentSlaveTalon(
-        Constants.Drive.LEFT_SLAVE_1_ID,
-        Constants.Drive.LEFT_MASTER_ID
-    )
+    private val leftMasterSpark = CANSparkMax(Constants.Drive.LEFT_MASTER_ID, CANSparkMaxLowLevel.MotorType.kBrushless)//CANMotorControllerFactory.createDefaultTalon(Constants.Drive.LEFT_MASTER_ID)
+//    private val leftSlaveSpark = CANSparkMax(Constants.Drive.LEFT_SLAVE_1_ID, CANSparkMaxLowLevel.MotorType.kBrushless)//CANMotorControllerFactory.createPermanentSlaveTalon(
+//        Constants.Drive.LEFT_SLAVE_1_ID,
+//        Constants.Drive.LEFT_MASTER_ID
+//    )
+
+    private val leftEncoder = leftMasterSpark.encoder
+    private val rightEncoder = rightMasterSpark.encoder
 
     private val ahrs: AHRS
     private var path: Path
@@ -59,15 +63,20 @@ class Drive private constructor() : Subsystem() {
             return field
         }
 
-    var brakeMode: NeutralMode =
-        NeutralMode.Coast // sets whether the brake mode should be coast (no resistance) or by force
+    var brakeMode: CANSparkMax.IdleMode =
+        CANSparkMax.IdleMode.kCoast // sets whether the brake mode should be coast (no resistance) or by force
         set(type) {
             if (brakeMode != type) {
-                rightMasterTalon.setNeutralMode(type)
-                rightSlaveTalon.setNeutralMode(type)
+//                rightMasterSpark.setNeutralMode(type)
+//                rightSlaveSpark.setNeutralMode(type)
 
-                leftMasterTalon.setNeutralMode(type)
-                leftSlaveTalon.setNeutralMode(type)
+                rightMasterSpark.idleMode = type
+//                rightSlaveSpark.idleMode = type
+//                leftMasterSpark.setNeutralMode(type)
+//                leftSlaveSpark.setNeutralMode(type)
+
+                leftMasterSpark.idleMode = type
+//                rightSlaveSpark.idleMode = type
             }
         }
 
@@ -82,99 +91,110 @@ class Drive private constructor() : Subsystem() {
     private var currentState = DriveControlState.OPEN_LOOP
 
     init {
-        rightMasterTalon.configFactoryDefault()
-        rightSlaveTalon.configFactoryDefault()
+//        rightMasterSpark.configFactoryDefault()
+//        rightSlaveSpark.configFactoryDefault()
 
-        leftMasterTalon.configFactoryDefault()
-        leftSlaveTalon.configFactoryDefault()
+        rightMasterSpark.restoreFactoryDefaults(true)
+//        rightSlaveSpark.restoreFactoryDefaults(true)
 
-        rightMasterTalon.setStatusFramePeriod(
-            StatusFrameEnhanced.Status_2_Feedback0,
-            Constants.Drive.STATUS_FRAME_PERIOD_MS, Constants.Universal.TIMEOUT
-        )
-        leftMasterTalon.setStatusFramePeriod(
-            StatusFrameEnhanced.Status_2_Feedback0,
-            Constants.Drive.STATUS_FRAME_PERIOD_MS, Constants.Universal.TIMEOUT
-        )
+//        leftMasterSpark.configFactoryDefault()
+//        leftSlaveSpark.configFactoryDefault()
 
-        rightMasterTalon.inverted = true
-        rightSlaveTalon.inverted = true
-        leftMasterTalon.inverted = false
-        leftMasterTalon.inverted = false
+        leftMasterSpark.restoreFactoryDefaults(true)
+//        leftSlaveSpark.restoreFactoryDefaults(true)
 
-        rightMasterTalon.setSensorPhase(true)
-        rightSlaveTalon.setSensorPhase(true)
-        leftMasterTalon.setSensorPhase(true)
-        leftSlaveTalon.setSensorPhase(true)
+//        rightMasterSpark.setStatusFramePeriod(
+//            StatusFrameEnhanced.Status_2_Feedback0,
+//            Constants.Drive.STATUS_FRAME_PERIOD_MS, Constants.Universal.TIMEOUT
+//        )
+//        leftMasterSpark.setStatusFramePeriod(
+//            StatusFrameEnhanced.Status_2_Feedback0,
+//            Constants.Drive.STATUS_FRAME_PERIOD_MS, Constants.Universal.TIMEOUT
+//        )
 
-        rightMasterTalon.configSelectedFeedbackSensor(
-            FeedbackDevice.CTRE_MagEncoder_Relative,
-            0,
-            Constants.Universal.TIMEOUT
-        )
-        rightMasterTalon.configSelectedFeedbackSensor(
-            FeedbackDevice.CTRE_MagEncoder_Relative,
-            1,
-            Constants.Universal.TIMEOUT
-        )
+        rightMasterSpark.inverted = true
+//        rightSlaveSpark.inverted = true
+        leftMasterSpark.inverted = false
+//        leftSlaveSpark.inverted = false
 
-        leftMasterTalon.configSelectedFeedbackSensor(
-            FeedbackDevice.CTRE_MagEncoder_Relative,
-            0,
-            Constants.Universal.TIMEOUT
-        )
-        leftMasterTalon.configSelectedFeedbackSensor(
-            FeedbackDevice.CTRE_MagEncoder_Relative,
-            1,
-            Constants.Universal.TIMEOUT
-        )
+//        leftSlaveSpark.follow(leftMasterSpark)
+//        rightSlaveSpark.follow(rightMasterSpark)
+//        rightMasterSpark.setSensorPhase(true)
+//        rightSlaveSpark.setSensorPhase(true)
+//        leftMasterSpark.setSensorPhase(true)
+//        leftSlaveSpark.setSensorPhase(true)
 
-        rightMasterTalon.enableVoltageCompensation(true)
-        rightMasterTalon.configVoltageCompSaturation(Constants.Drive.VOLTAGE_COMP_LEVEL, Constants.Universal.TIMEOUT)
-        leftMasterTalon.enableVoltageCompensation(true)
-        leftMasterTalon.configVoltageCompSaturation(Constants.Drive.VOLTAGE_COMP_LEVEL, Constants.Universal.TIMEOUT)
+//        rightMasterSpark.configSelectedFeedbackSensor(
+//            FeedbackDevice.CTRE_MagEncoder_Relative,
+//            0,
+//            Constants.Universal.TIMEOUT
+//        )
+//        rightMasterSpark.configSelectedFeedbackSensor(
+//            FeedbackDevice.CTRE_MagEncoder_Relative,
+//            1,
+//            Constants.Universal.TIMEOUT
+//        )
+//
+//        leftMasterSpark.configSelectedFeedbackSensor(
+//            FeedbackDevice.CTRE_MagEncoder_Relative,
+//            0,
+//            Constants.Universal.TIMEOUT
+//        )
+//        leftMasterSpark.configSelectedFeedbackSensor(
+//            FeedbackDevice.CTRE_MagEncoder_Relative,
+//            1,
+//            Constants.Universal.TIMEOUT
+//        )
+//
+//        rightMasterSpark.enableVoltageCompensation(true)
+//        rightMasterSpark.configVoltageCompSaturation(Constants.Drive.VOLTAGE_COMP_LEVEL, Constants.Universal.TIMEOUT)
+//        leftMasterSpark.enableVoltageCompensation(true)
+//        leftMasterSpark.configVoltageCompSaturation(Constants.Drive.VOLTAGE_COMP_LEVEL, Constants.Universal.TIMEOUT)
+//
+//        rightMasterSpark.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_50Ms, Constants.Universal.TIMEOUT)
+//        leftMasterSpark.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_50Ms, Constants.Universal.TIMEOUT)
+//
+//        rightMasterSpark.configClosedloopRamp(Constants.Drive.CLOSED_LOOP_RAMP, Constants.Universal.TIMEOUT)
+//        leftMasterSpark.configClosedloopRamp(Constants.Drive.CLOSED_LOOP_RAMP, Constants.Universal.TIMEOUT)
+//        rightMasterSpark.configNeutralDeadband(
+//            Constants.Drive.PERCENT_DEADBAND,
+//            Constants.Universal.TIMEOUT
+//        ) // 254 used 0 for timeout
+//        leftMasterSpark.configNeutralDeadband(Constants.Drive.PERCENT_DEADBAND, Constants.Universal.TIMEOUT)
 
-        rightMasterTalon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_50Ms, Constants.Universal.TIMEOUT)
-        leftMasterTalon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_50Ms, Constants.Universal.TIMEOUT)
-
-        rightMasterTalon.configClosedloopRamp(Constants.Drive.CLOSED_LOOP_RAMP, Constants.Universal.TIMEOUT)
-        leftMasterTalon.configClosedloopRamp(Constants.Drive.CLOSED_LOOP_RAMP, Constants.Universal.TIMEOUT)
-        rightMasterTalon.configNeutralDeadband(
-            Constants.Drive.PERCENT_DEADBAND,
-            Constants.Universal.TIMEOUT
-        ) // 254 used 0 for timeout
-        leftMasterTalon.configNeutralDeadband(Constants.Drive.PERCENT_DEADBAND, Constants.Universal.TIMEOUT)
+        leftMasterSpark.openLoopRampRate = 0.1
+        rightMasterSpark.openLoopRampRate = 0.1
 
         // TODO: SET CONVERSION FACTORS
 
-        leftMasterTalon.config_kP(0, Constants.Gains.LEFT_LOW_KP, Constants.Universal.TIMEOUT)
-        leftMasterTalon.config_kI(0, Constants.Gains.LEFT_LOW_KI, Constants.Universal.TIMEOUT)
-        leftMasterTalon.config_kD(0, Constants.Gains.LEFT_LOW_KD, Constants.Universal.TIMEOUT)
-        leftMasterTalon.config_kF(0, Constants.Gains.LEFT_LOW_KF, Constants.Universal.TIMEOUT)
-
-        leftMasterTalon.config_kP(1, Constants.Gains.LEFT_HIGH_KP, Constants.Universal.TIMEOUT)
-        leftMasterTalon.config_kI(1, Constants.Gains.LEFT_HIGH_KI, Constants.Universal.TIMEOUT)
-        leftMasterTalon.config_kD(1, Constants.Gains.LEFT_HIGH_KD, Constants.Universal.TIMEOUT)
-        leftMasterTalon.config_kF(1, Constants.Gains.LEFT_HIGH_KF, Constants.Universal.TIMEOUT)
-
-        rightMasterTalon.config_kP(0, Constants.Gains.RIGHT_LOW_KP, Constants.Universal.TIMEOUT)
-        rightMasterTalon.config_kI(0, Constants.Gains.RIGHT_LOW_KI, Constants.Universal.TIMEOUT)
-        rightMasterTalon.config_kD(0, Constants.Gains.RIGHT_LOW_KD, Constants.Universal.TIMEOUT)
-        rightMasterTalon.config_kF(0, Constants.Gains.RIGHT_LOW_KF, Constants.Universal.TIMEOUT)
-
-        rightMasterTalon.config_kP(1, Constants.Gains.RIGHT_HIGH_KP, Constants.Universal.TIMEOUT)
-        rightMasterTalon.config_kI(1, Constants.Gains.RIGHT_HIGH_KI, Constants.Universal.TIMEOUT)
-        rightMasterTalon.config_kD(1, Constants.Gains.RIGHT_HIGH_KD, Constants.Universal.TIMEOUT)
-        rightMasterTalon.config_kF(1, Constants.Gains.RIGHT_HIGH_KF, Constants.Universal.TIMEOUT)
-
-        rightMasterTalon.configContinuousCurrentLimit(
-            Constants.Drive.CONTINUOUS_CURRENT_LIMIT,
-            Constants.Universal.TIMEOUT
-        )
-        leftMasterTalon.configContinuousCurrentLimit(
-            Constants.Drive.CONTINUOUS_CURRENT_LIMIT,
-            Constants.Universal.TIMEOUT
-        )
+//        leftMasterSpark.config_kP(0, Constants.Gains.LEFT_LOW_KP, Constants.Universal.TIMEOUT)
+//        leftMasterSpark.config_kI(0, Constants.Gains.LEFT_LOW_KI, Constants.Universal.TIMEOUT)
+//        leftMasterSpark.config_kD(0, Constants.Gains.LEFT_LOW_KD, Constants.Universal.TIMEOUT)
+//        leftMasterSpark.config_kF(0, Constants.Gains.LEFT_LOW_KF, Constants.Universal.TIMEOUT)
+//
+//        leftMasterSpark.config_kP(1, Constants.Gains.LEFT_HIGH_KP, Constants.Universal.TIMEOUT)
+//        leftMasterSpark.config_kI(1, Constants.Gains.LEFT_HIGH_KI, Constants.Universal.TIMEOUT)
+//        leftMasterSpark.config_kD(1, Constants.Gains.LEFT_HIGH_KD, Constants.Universal.TIMEOUT)
+//        leftMasterSpark.config_kF(1, Constants.Gains.LEFT_HIGH_KF, Constants.Universal.TIMEOUT)
+//
+//        rightMasterSpark.config_kP(0, Constants.Gains.RIGHT_LOW_KP, Constants.Universal.TIMEOUT)
+//        rightMasterSpark.config_kI(0, Constants.Gains.RIGHT_LOW_KI, Constants.Universal.TIMEOUT)
+//        rightMasterSpark.config_kD(0, Constants.Gains.RIGHT_LOW_KD, Constants.Universal.TIMEOUT)
+//        rightMasterSpark.config_kF(0, Constants.Gains.RIGHT_LOW_KF, Constants.Universal.TIMEOUT)
+//
+//        rightMasterSpark.config_kP(1, Constants.Gains.RIGHT_HIGH_KP, Constants.Universal.TIMEOUT)
+//        rightMasterSpark.config_kI(1, Constants.Gains.RIGHT_HIGH_KI, Constants.Universal.TIMEOUT)
+//        rightMasterSpark.config_kD(1, Constants.Gains.RIGHT_HIGH_KD, Constants.Universal.TIMEOUT)
+//        rightMasterSpark.config_kF(1, Constants.Gains.RIGHT_HIGH_KF, Constants.Universal.TIMEOUT)
+//
+//        rightMasterSpark.configContinuousCurrentLimit(
+//            Constants.Drive.CONTINUOUS_CURRENT_LIMIT,
+//            Constants.Universal.TIMEOUT
+//        )
+//        leftMasterSpark.configContinuousCurrentLimit(
+//            Constants.Drive.CONTINUOUS_CURRENT_LIMIT,
+//            Constants.Universal.TIMEOUT
+//        )
 
         setOpenLoop(DriveSignal.NEUTRAL)
 
@@ -231,13 +251,13 @@ class Drive private constructor() : Subsystem() {
     }
 
     private fun registerLogging() {
-        HelixLogger.addSource("DT Left Output %") { leftMasterTalon.motorOutputPercent }
-        HelixLogger.addSource("DT Right Output %") { rightMasterTalon.motorOutputPercent }
+        HelixLogger.addSource("DT Left Output %") { leftMasterSpark.appliedOutput }
+        HelixLogger.addSource("DT Right Output %") { rightMasterSpark.appliedOutput }
 
-        HelixLogger.addSource("DT Left Master Input Current") { leftMasterTalon.outputCurrent }
-        HelixLogger.addSource("DT Left Slave Input Current") { leftSlaveTalon.outputCurrent }
-        HelixLogger.addSource("DT Right Master Input Current") { rightMasterTalon.outputCurrent }
-        HelixLogger.addSource("DT Right Slave Input Current") { rightSlaveTalon.outputCurrent }
+        HelixLogger.addSource("DT Left Master Input Current") { leftMasterSpark.outputCurrent }
+//        HelixLogger.addSource("DT Left Slave Input Current") { leftSlaveSpark.outputCurrent }
+        HelixLogger.addSource("DT Right Master Input Current") { rightMasterSpark.outputCurrent }
+//        HelixLogger.addSource("DT Right Slave Input Current") { rightSlaveSpark.outputCurrent }
 
         HelixLogger.addSource("DT Left Velocity (in/s)") { getLeftVelocityInchesPerSec() }
         HelixLogger.addSource("DT Right Velocity (in/s)") { getRightVelocityInchesPerSec() }
@@ -274,10 +294,10 @@ class Drive private constructor() : Subsystem() {
     @Synchronized
     fun setOpenLoop(signal: DriveSignal) {
         if (currentState !== DriveControlState.OPEN_LOOP) {
-            leftMasterTalon.configNominalOutputForward(0.0, Constants.Universal.TIMEOUT)
-            rightMasterTalon.configNominalOutputForward(0.0, Constants.Universal.TIMEOUT)
+//            leftMasterSpark.configNominalOutputForward(0.0, Constants.Universal.TIMEOUT)
+//            rightMasterSpark.configNominalOutputForward(0.0, Constants.Universal.TIMEOUT)
             currentState = DriveControlState.OPEN_LOOP
-            brakeMode = NeutralMode.Coast
+            brakeMode = CANSparkMax.IdleMode.kCoast
             HelixEvents.addEvent("DRIVETRAIN", "Entered open loop control")
         }
         setLeftRightPower(
@@ -293,14 +313,18 @@ class Drive private constructor() : Subsystem() {
      */
     @Synchronized
     fun setLeftRightPower(left: Double, right: Double) {
-        leftMasterTalon.set(ControlMode.PercentOutput, left)
-        rightMasterTalon.set(ControlMode.PercentOutput, right)
+//        leftMasterSpark.set(ControlMode.PercentOutput, left)
+//        rightMasterSpark.set(ControlMode.PercentOutput, right)
+        leftMasterSpark.set(left)
+        rightMasterSpark.set(right)
     }
 
     @Synchronized
     fun resetEncoders() {
-        rightMasterTalon.sensorCollection.setQuadraturePosition(0, Constants.Universal.TIMEOUT)
-        leftMasterTalon.sensorCollection.setQuadraturePosition(0, Constants.Universal.TIMEOUT)
+//        rightMasterSpark.sensorCollection.setQuadraturePosition(0, Constants.Universal.TIMEOUT)
+//        leftMasterSpark.sensorCollection.setQuadraturePosition(0, Constants.Universal.TIMEOUT)
+        leftEncoder.position = 0.0
+        rightEncoder.position = 0.0
     }
 
     // Copied from WPIlib arcade drive with no functional modification
@@ -417,13 +441,14 @@ class Drive private constructor() : Subsystem() {
                     Constants.Drive.RIGHT_V_INTERCEPT_REVERSE_HIGH
             }
 
-            leftMasterTalon.set(ControlMode.Velocity, leftTargetVel, DemandType.ArbitraryFeedForward, leftFeedForward)
-            rightMasterTalon.set(
-                ControlMode.Velocity,
-                rightTargetVel,
-                DemandType.ArbitraryFeedForward,
-                rightFeedForward
-            )
+
+//            leftMasterSpark.set(ControlMode.Velocity, leftTargetVel, DemandType.ArbitraryFeedForward, leftFeedForward)
+//            rightMasterSpark.set(
+//                ControlMode.Velocity,
+//                rightTargetVel,
+//                DemandType.ArbitraryFeedForward,
+//                rightFeedForward
+//            )
         } else {
             configureTalonsForVelocityControl()
             currentState = DriveControlState.VELOCITY_SETPOINT
@@ -434,8 +459,8 @@ class Drive private constructor() : Subsystem() {
     @Synchronized
     fun setPositionSetpoint(leftInches: Double, rightInches: Double) {
         if (usesTalonPositionControl(currentState)) {
-            leftMasterTalon.set(ControlMode.MotionMagic, leftInches * Constants.Drive.FEET_PER_SEC_TO_NATIVE)
-            rightMasterTalon.set(ControlMode.MotionMagic, rightInches * Constants.Drive.FEET_PER_SEC_TO_NATIVE)
+//            leftMasterSpark.set(ControlMode.MotionMagic, leftInches * Constants.Drive.FEET_PER_SEC_TO_NATIVE)
+//            rightMasterSpark.set(ControlMode.MotionMagic, rightInches * Constants.Drive.FEET_PER_SEC_TO_NATIVE)
         } else {
             configureTalonsforPositionControl()
             currentState = DriveControlState.MOTION_MAGIC
@@ -448,32 +473,32 @@ class Drive private constructor() : Subsystem() {
         if (!usesTalonVelocityControl(currentState)) {
             // We entered a velocity control state.
 
-            leftMasterTalon.set(ControlMode.Velocity, 0.0) // velocity  output value is in position change / 100ms
-            leftMasterTalon.configNominalOutputForward(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
-            leftMasterTalon.configNominalOutputReverse(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
-            leftMasterTalon.selectProfileSlot(0, Constants.Universal.TIMEOUT)
-            leftMasterTalon.configPeakOutputForward(Constants.Drive.AUTO_PEAK_OUTPUT, Constants.Universal.TIMEOUT)
-            leftMasterTalon.configPeakOutputReverse(
-                Constants.Drive.AUTO_PEAK_OUTPUT * -1.0,
-                Constants.Universal.TIMEOUT
-            )
-
-            rightMasterTalon.set(ControlMode.Velocity, 0.0) // velocity  output value is in position change / 100ms
-            rightMasterTalon.configNominalOutputForward(
-                Constants.Drive.AUTO_NOMINAL_OUTPUT,
-                Constants.Universal.TIMEOUT
-            )
-            rightMasterTalon.configNominalOutputReverse(
-                Constants.Drive.AUTO_NOMINAL_OUTPUT,
-                Constants.Universal.TIMEOUT
-            )
-            rightMasterTalon.selectProfileSlot(0, 0)
-            rightMasterTalon.configPeakOutputForward(Constants.Drive.AUTO_PEAK_OUTPUT, Constants.Universal.TIMEOUT)
-            rightMasterTalon.configPeakOutputReverse(
-                Constants.Drive.AUTO_PEAK_OUTPUT * -1.0,
-                Constants.Universal.TIMEOUT
-            )
-            brakeMode = NeutralMode.Brake
+//            leftMasterSpark.set(ControlMode.Velocity, 0.0) // velocity  output value is in position change / 100ms
+//            leftMasterSpark.configNominalOutputForward(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
+//            leftMasterSpark.configNominalOutputReverse(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
+//            leftMasterSpark.selectProfileSlot(0, Constants.Universal.TIMEOUT)
+//            leftMasterSpark.configPeakOutputForward(Constants.Drive.AUTO_PEAK_OUTPUT, Constants.Universal.TIMEOUT)
+//            leftMasterSpark.configPeakOutputReverse(
+//                Constants.Drive.AUTO_PEAK_OUTPUT * -1.0,
+//                Constants.Universal.TIMEOUT
+//            )
+//
+//            rightMasterSpark.set(ControlMode.Velocity, 0.0) // velocity  output value is in position change / 100ms
+//            rightMasterSpark.configNominalOutputForward(
+//                Constants.Drive.AUTO_NOMINAL_OUTPUT,
+//                Constants.Universal.TIMEOUT
+//            )
+//            rightMasterSpark.configNominalOutputReverse(
+//                Constants.Drive.AUTO_NOMINAL_OUTPUT,
+//                Constants.Universal.TIMEOUT
+//            )
+//            rightMasterSpark.selectProfileSlot(0, 0)
+//            rightMasterSpark.configPeakOutputForward(Constants.Drive.AUTO_PEAK_OUTPUT, Constants.Universal.TIMEOUT)
+//            rightMasterSpark.configPeakOutputReverse(
+//                Constants.Drive.AUTO_PEAK_OUTPUT * -1.0,
+//                Constants.Universal.TIMEOUT
+//            )
+//            brakeMode = NeutralMode.Brake
         }
         HelixEvents.addEvent("DRIVETRAIN", "Configured Talons for velocity control")
     }
@@ -482,31 +507,31 @@ class Drive private constructor() : Subsystem() {
     private fun configureTalonsforPositionControl() {
         if (!usesTalonPositionControl(currentState)) {
             // We entered a position control state.
-            leftMasterTalon.configNominalOutputForward(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
-            leftMasterTalon.configNominalOutputReverse(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
-            leftMasterTalon.selectProfileSlot(0, Constants.Universal.TIMEOUT)
-            leftMasterTalon.configPeakOutputForward(Constants.Drive.AUTO_PEAK_OUTPUT, Constants.Universal.TIMEOUT)
-            leftMasterTalon.configPeakOutputReverse(
-                Constants.Drive.AUTO_PEAK_OUTPUT * -1.0,
-                Constants.Universal.TIMEOUT
-            )
-
-            rightMasterTalon.configNominalOutputForward(
-                Constants.Drive.AUTO_NOMINAL_OUTPUT,
-                Constants.Universal.TIMEOUT
-            )
-            rightMasterTalon.configNominalOutputReverse(
-                Constants.Drive.AUTO_NOMINAL_OUTPUT,
-                Constants.Universal.TIMEOUT
-            )
-            rightMasterTalon.selectProfileSlot(0, 0)
-            rightMasterTalon.configPeakOutputForward(Constants.Drive.AUTO_PEAK_OUTPUT, Constants.Universal.TIMEOUT)
-            rightMasterTalon.configPeakOutputReverse(
-                Constants.Drive.AUTO_PEAK_OUTPUT * -1.0,
-                Constants.Universal.TIMEOUT
-            )
-
-            brakeMode = NeutralMode.Brake
+//            leftMasterSpark.configNominalOutputForward(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
+//            leftMasterSpark.configNominalOutputReverse(Constants.Drive.AUTO_NOMINAL_OUTPUT, Constants.Universal.TIMEOUT)
+//            leftMasterSpark.selectProfileSlot(0, Constants.Universal.TIMEOUT)
+//            leftMasterSpark.configPeakOutputForward(Constants.Drive.AUTO_PEAK_OUTPUT, Constants.Universal.TIMEOUT)
+//            leftMasterSpark.configPeakOutputReverse(
+//                Constants.Drive.AUTO_PEAK_OUTPUT * -1.0,
+//                Constants.Universal.TIMEOUT
+//            )
+//
+//            rightMasterSpark.configNominalOutputForward(
+//                Constants.Drive.AUTO_NOMINAL_OUTPUT,
+//                Constants.Universal.TIMEOUT
+//            )
+//            rightMasterSpark.configNominalOutputReverse(
+//                Constants.Drive.AUTO_NOMINAL_OUTPUT,
+//                Constants.Universal.TIMEOUT
+//            )
+//            rightMasterSpark.selectProfileSlot(0, 0)
+//            rightMasterSpark.configPeakOutputForward(Constants.Drive.AUTO_PEAK_OUTPUT, Constants.Universal.TIMEOUT)
+//            rightMasterSpark.configPeakOutputReverse(
+//                Constants.Drive.AUTO_PEAK_OUTPUT * -1.0,
+//                Constants.Universal.TIMEOUT
+//            )
+//
+//            brakeMode = NeutralMode.Brake
         }
         HelixEvents.addEvent("DRIVETRAIN", "Configured Talons for position control")
     }
@@ -585,19 +610,19 @@ class Drive private constructor() : Subsystem() {
     }
 
     fun getLeftDistanceInches(): Double {
-        return nativeToInches(leftMasterTalon.selectedSensorPosition)
+        return nativeToInches(leftEncoder.position.toInt())
     }
 
     fun getRightDistanceInches(): Double {
-        return nativeToInches(rightMasterTalon.selectedSensorPosition)
+        return nativeToInches(rightEncoder.position.toInt())
     }
 
     fun getLeftVelocityInchesPerSec(): Double {
-        return nativeToInchesPerSecond(leftMasterTalon.selectedSensorVelocity)
+        return nativeToInchesPerSecond(leftEncoder.velocity.toInt())
     }
 
     fun getRightVelocityInchesPerSec(): Double {
-        return nativeToInchesPerSecond(rightMasterTalon.selectedSensorVelocity)
+        return nativeToInchesPerSecond(rightEncoder.velocity.toInt())
     }
 
     fun boundHalfDegrees(angleDegrees: Double): Double {

@@ -8,11 +8,11 @@ class Constants {
     }
 
     object Drive {
-        const val LEFT_MASTER_ID = 10
-        const val LEFT_SLAVE_1_ID = 9
+        const val LEFT_MASTER_ID = 1
+        const val LEFT_SLAVE_1_ID = 2
 
-        const val RIGHT_MASTER_ID = 5
-        const val RIGHT_SLAVE_1_ID = 6
+        const val RIGHT_MASTER_ID = 3
+        const val RIGHT_SLAVE_1_ID = 4
 
         const val STATUS_FRAME_PERIOD_MS = 5
 

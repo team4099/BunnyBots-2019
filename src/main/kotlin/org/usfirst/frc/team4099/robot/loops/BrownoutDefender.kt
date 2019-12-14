@@ -15,19 +15,19 @@ import org.usfirst.frc.team4099.robot.Constants
 class BrownoutDefender private constructor() : Loop {
     private val pdp = PowerDistributionPanel()
     // private val elevator = Elevator.instance
-    private val compressor = Compressor()
+//    private val compressor = Compressor()
 
     override fun onStart(timestamp: Double) {
         pdp.clearStickyFaults()
     }
 
     override fun onLoop(timestamp: Double) {
-        if (pdp.voltage < Constants.BrownoutDefender.COMPRESSOR_STOP_VOLTAGE ||
-            pdp.totalCurrent > Constants.BrownoutDefender.COMPRESSOR_STOP_CURRENT) {
-            compressor.stop()
-        } else {
-            compressor.start()
-        }
+//        if (pdp.voltage < Constants.BrownoutDefender.COMPRESSOR_STOP_VOLTAGE ||
+//            pdp.totalCurrent > Constants.BrownoutDefender.COMPRESSOR_STOP_CURRENT) {
+//            compressor.stop()
+//        } else {
+//            compressor.start()
+//        }
     }
 
     override fun onStop(timestamp: Double) {}

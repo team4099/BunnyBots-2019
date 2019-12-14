@@ -16,7 +16,7 @@ import org.usfirst.frc.team4099.robot.loops.VoltageEstimator
 import org.usfirst.frc.team4099.robot.subsystems.Drive
 
 class Robot : TimedRobot() {
-    private lateinit var autoModeExecutor: AutoModeExecutor
+//    private lateinit var autoModeExecutor: AutoModeExecutor
 
     private val drive = Drive.instance
     private val controlBoard = ControlBoard.instance
@@ -34,11 +34,13 @@ class Robot : TimedRobot() {
     override fun robotInit() {
         try {
             HelixEvents.startLogging()
-            CameraServer.getInstance().startAutomaticCapture()
+//            CameraServer.getInstance().startAutomaticCapture()
 
-            DashboardConfigurator.initDashboard()
+//            DashboardConfigurator.initDashboard()
 
-            SubsystemManager.register(listOf(drive))
+            SubsystemManager.register(listOf(
+                    drive
+                    ))
 
             enabledLooper.register(SubsystemManager.enabledLoop)
             enabledLooper.register(BrownoutDefender.instance)
@@ -69,7 +71,7 @@ class Robot : TimedRobot() {
 
     override fun autonomousInit() {
         try {
-            autoModeExecutor = AutoModeExecutor()
+//            autoModeExecutor = AutoModeExecutor()
             HelixEvents.addEvent("ROBOT", "Autonomous Enabled")
         } catch (t: Throwable) {
             CrashTracker.logThrowableCrash("autonomousInit", t)

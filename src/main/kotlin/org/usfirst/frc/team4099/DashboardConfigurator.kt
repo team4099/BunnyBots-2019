@@ -61,6 +61,7 @@ object DashboardConfigurator {
     }
 
     fun initDashboard() {
-        TODO("add stuff here to get rid of this suppress")
+//        TODO("add stuff here to get rid of this suppress")
+        println("this is here to stop errors")
     }
 }
