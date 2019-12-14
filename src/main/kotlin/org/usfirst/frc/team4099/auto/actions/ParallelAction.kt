@@ -4,7 +4,7 @@ package org.usfirst.frc.team4099.auto.actions
  * Composite action, running all sub-actions at the same time All actions are
  * started then updated until all actions report being done.
  *
- * @param A
+ * @param actions
  * List of Action objects
  */
 class ParallelAction(actions: List<Action>) : Action {
