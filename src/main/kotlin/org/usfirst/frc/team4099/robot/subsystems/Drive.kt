@@ -23,7 +23,7 @@ import kotlin.math.ln
 import kotlin.math.max
 import kotlin.math.sin
 
-class Drive private constructor() : Subsystem() {
+object Drive : Subsystem() {
     private val rightMasterTalon = CANMotorControllerFactory.createDefaultTalon(Constants.Drive.RIGHT_MASTER_ID)
     private val rightSlaveTalon = CANMotorControllerFactory.createPermanentSlaveTalon(
         Constants.Drive.RIGHT_SLAVE_1_ID,
@@ -602,9 +602,5 @@ class Drive private constructor() : Subsystem() {
 
     fun boundHalfDegrees(angleDegrees: Double): Double {
         return ((angleDegrees + 180.0) % 360.0) - 180.0
-    }
-
-    companion object {
-        val instance = Drive()
     }
 }

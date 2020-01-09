@@ -9,7 +9,6 @@ import kotlin.math.abs
 import kotlin.math.sign
 
 class DistanceAction(inchesToMove: Double, slowMode: Boolean) : Action {
-    private val drive = Drive.instance
     private val direction = sign(inchesToMove)
     private val inchesToMove: Double = abs(inchesToMove)
     private var startDist = 0.0
@@ -26,35 +25,35 @@ class DistanceAction(inchesToMove: Double, slowMode: Boolean) : Action {
     }
 
     override fun isFinished(): Boolean {
-        return abs(drive.getLeftDistanceInches()) - startDist >= inchesToMove ||
-            abs(drive.getRightDistanceInches()) - otherStart >= inchesToMove ||
+        return abs(Drive.getLeftDistanceInches()) - startDist >= inchesToMove ||
+            abs(Drive.getRightDistanceInches()) - otherStart >= inchesToMove ||
             done ||
             Timer.getFPGATimestamp() - startTime > Constants.Autonomous.FORWARD_MAX_TIME_SECONDS
     }
 
     override fun update() {
-        val correctionAngle = startAngle - drive.angle
+        val correctionAngle = startAngle - Drive.angle
         if (abs(correctionAngle) > Constants.Autonomous.FORWARD_GIVE_UP_ANGLE) {
             done = true
             return
         }
-        drive.arcadeDrive(power * direction,
+        Drive.arcadeDrive(power * direction,
             correctionAngle * Constants.Autonomous.FORWARD_CORRECTION_KP * direction)
         println("correctionAngle: $correctionAngle")
-        SmartDashboard.putNumber("distanceInAction", abs(drive.getRightDistanceInches()) - otherStart)
+        SmartDashboard.putNumber("distanceInAction", abs(Drive.getRightDistanceInches()) - otherStart)
     }
 
     override fun done() {
-        drive.setOpenLoop(DriveSignal.NEUTRAL)
+        Drive.setOpenLoop(DriveSignal.NEUTRAL)
         println("------- END DISTANCE -------")
     }
 
     override fun start() {
         startTime = Timer.getFPGATimestamp()
-        startAngle = drive.angle
+        startAngle = Drive.angle
         println("------- NEW START AUTONOMOUS RUN -------")
         println("Starting angle: $startAngle")
-        startDist = drive.getLeftDistanceInches()
-        otherStart = drive.getRightDistanceInches()
+        startDist = Drive.getLeftDistanceInches()
+        otherStart = Drive.getRightDistanceInches()
     }
 }

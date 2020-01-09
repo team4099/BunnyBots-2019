@@ -13,13 +13,13 @@ import org.usfirst.frc.team4099.robot.loops.BrownoutDefender
 import org.usfirst.frc.team4099.robot.loops.FaultDetector
 import org.usfirst.frc.team4099.robot.loops.Looper
 import org.usfirst.frc.team4099.robot.loops.VoltageEstimator
+import org.usfirst.frc.team4099.robot.state.ShootingStateMachine
 import org.usfirst.frc.team4099.robot.subsystems.Drive
 import org.usfirst.frc.team4099.robot.subsystems.Vision
 
 class Robot : TimedRobot() {
     private lateinit var autoModeExecutor: AutoModeExecutor
 
-    private val drive = Drive.instance
     private val controlBoard = ControlBoard.instance
     private val disabledLooper = Looper("disabledLooper")
     private val enabledLooper = Looper("enabledLooper")
@@ -39,7 +39,7 @@ class Robot : TimedRobot() {
 
             DashboardConfigurator.initDashboard()
 
-            SubsystemManager.register(drive)
+            SubsystemManager.register(Drive)
             SubsystemManager.register(Vision)
 
             enabledLooper.register(SubsystemManager.enabledLoop)
@@ -104,11 +104,21 @@ class Robot : TimedRobot() {
 
     override fun teleopPeriodic() {
         try {
-            drive.setCheesyishDrive(
+            Drive.setCheesyishDrive(
                 controlBoard.throttle,
                 controlBoard.turn,
                 Utils.around(controlBoard.throttle, 0.0, Constants.Joysticks.QUICK_TURN_THROTTLE_TOLERANCE)
             )
+
+            // Update shooter state
+            if (controlBoard.overrideShoot) ShootingStateMachine.state = ShootingStateMachine.ShootingState.SHOOTING
+            else {
+                if (controlBoard.throttle > 0 || controlBoard.turn > 0) {
+                    // If we moved our aim was disrupted
+                    ShootingStateMachine.state = ShootingStateMachine.ShootingState.INACTIVE
+                } else ShootingStateMachine.handleDriverDesires(controlBoard.aim, controlBoard.shoot)
+            }
+
         } catch (t: Throwable) {
             CrashTracker.logThrowableCrash("teleopPeriodic", t)
             throw t

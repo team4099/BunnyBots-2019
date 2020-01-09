@@ -6,16 +6,6 @@ import org.usfirst.frc.team4099.lib.util.CrashTrackingRunnable
 import org.usfirst.frc.team4099.robot.Constants
 
 class Looper(private val name: String) {
-    private var running: Boolean = false
-
-    private val notifier: Notifier
-    private val taskRunningLock = Any()
-
-    private val loops = mutableListOf<Loop>()
-
-    private var timestamp = 0.0
-    var dt = 0.0
-        private set
 
     // define the thread (runnable) that will be repeated continuously
     private val runnable = object : CrashTrackingRunnable() {
@@ -33,10 +23,16 @@ class Looper(private val name: String) {
         }
     }
 
-    init {
-        notifier = Notifier(runnable)
-        running = false
-    }
+    private var running = false
+
+    private val notifier = Notifier(runnable)
+    private val taskRunningLock = Any()
+
+    private val loops = mutableListOf<Loop>()
+
+    private var timestamp = 0.0
+    var dt = 0.0
+        private set
 
     @Synchronized
     fun register(loop: Loop) {

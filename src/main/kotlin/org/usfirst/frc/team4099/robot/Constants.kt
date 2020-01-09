@@ -137,17 +137,23 @@ class Constants {
         const val CURRENT_LIMIT = 20
     }
     object Vision {
-        const val DRIVER_PIPELINE_ID = 1
         const val TARGETING_PIPELINE_ID = 0
+        const val DRIVER_PIPELINE_ID = 1
         const val TARGET_HEIGHT = 77.25
+
         const val CAMERA_HEIGHT = 0
         const val CAMERA_ANGLE = 0
+        const val MAX_ERROR = 0.5
+
+        const val SHOT_DISTANCE = 10
+
+        const val TURN_KP = 0.1
+        const val DISTANCE_KP = 0.1
+        const val MIN_COMMAND = 0.05
     }
 
     object BrownoutDefender {
         const val COMPRESSOR_STOP_VOLTAGE = 10
         const val COMPRESSOR_STOP_CURRENT = 70
     }
-
-
 }

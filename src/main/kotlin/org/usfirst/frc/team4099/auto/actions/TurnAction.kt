@@ -10,7 +10,6 @@ import org.usfirst.frc.team4099.robot.subsystems.Drive
  * Created by Oksana on 2/16/2017.
  */
 class TurnAction(angleToTurn: Double, slowMode: Boolean) : Action {
-    private val drive = Drive.instance
     private val direction = sign(angleToTurn)
     private val angleToTurn = abs(angleToTurn)
     private var power = Constants.Autonomous.TURN_POWER
@@ -26,20 +25,20 @@ class TurnAction(angleToTurn: Double, slowMode: Boolean) : Action {
     }
 
     override fun isFinished(): Boolean {
-        return abs(drive.angle - startAngle) >= angleToTurn || done
+        return abs(Drive.angle - startAngle) >= angleToTurn || done
     }
 
     override fun update() {
-        drive.setOpenLoop(turnSignal)
+        Drive.setOpenLoop(turnSignal)
     }
 
     override fun done() {
-        drive.setOpenLoop(DriveSignal.NEUTRAL)
+        Drive.setOpenLoop(DriveSignal.NEUTRAL)
         println("------- END TURN -------")
     }
 
     override fun start() {
-        startAngle = drive.angle
+        startAngle = Drive.angle
         println("------- NEW START AUTONOMOUS RUN -------")
         println("Starting angle: $startAngle")
     }

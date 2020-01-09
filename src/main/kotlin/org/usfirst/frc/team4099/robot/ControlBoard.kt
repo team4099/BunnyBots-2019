@@ -14,6 +14,15 @@ class ControlBoard private constructor() {
     val turn: Double
         get() = -driver.leftXAxis
 
+    val aim: Boolean
+        get() = driver.aButton
+
+    val shoot: Boolean
+        get() = operator.xButton
+
+    val overrideShoot: Boolean
+        get() = operator.yButton
+
     companion object {
         val instance = ControlBoard()
     }
